@@ -42,7 +42,7 @@ def un_center_coords(coords, plane=None):
     else:
         width, height = plane[0], plane[1]
 
-    return (coords[0] - width/2, coords[1] - height/2 )
+    return (coords[0] - width/2, coords[1] - height/2)
 
 
 def py_coords(coords):
@@ -93,7 +93,6 @@ def draw_radius(screen, color, coords, radius, radian, return_coords=False):
     y = coords[1] + radius * math.sin(radian)
 
     # y is negative because y coordinates in pygame go the other way
-    # TODO: Make the anchor or something start from the centre
     pygame.draw.line(screen, color, coords, (x, y))
 
     if return_coords:
@@ -163,6 +162,7 @@ def main():
         if first is None:
             prev = first = point
 
+        # TODO: Find out why the last dot connects to the first always
         for dot in dots:
             pygame.draw.line(screen, color['green'], xy(*prev), xy(*dot))
 
