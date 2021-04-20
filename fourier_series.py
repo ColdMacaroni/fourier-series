@@ -14,6 +14,13 @@ def xy(x, y):
     return py_coords(center_coords((x, y)))
 
 
+def un_xy(x, y):
+    """
+    does the opposite of xy
+    """
+    return un_center_coords(py_coords((x, y)))
+
+
 def center_coords(coords, plane=None):
     """
     Repositions coords to the centre of the given plane
@@ -23,7 +30,19 @@ def center_coords(coords, plane=None):
     else:
         width, height = plane[0], plane[1]
 
-    return width/2 + coords[0], height/2 + coords[1]
+    return (width/2 + coords[0], height/2 + coords[1])
+
+
+def un_center_coords(coords, plane=None):
+    """
+    Repositions coords to the bottom left of the plane
+    """
+    if plane is None:
+        width, height = screen_size()
+    else:
+        width, height = plane[0], plane[1]
+
+    return (coords[0] - width/2, coords[1] - height/2 )
 
 
 def py_coords(coords):
@@ -32,10 +51,21 @@ def py_coords(coords):
     return (coords[0], height - coords[1])
 
 
-def draw_hollow_circle(screen, color, coords, width, height, stroke=1):
+def un_py_coords(coords):
+    """Convert coordinates into cardinal coordinates (top-left => lower left)."""
+    height = screen_size()[1]
+    return (coords[0], height + coords[1])
+
+
+def draw_hollow_circle(screen, color, coords, radius, height=None, stroke=1):
     """
     Draws a circle with its centre at the x y coordinates.
     """
+    width = radius * 2
+
+    if height is None:
+        height = width
+
     # Make center at the given coordinates
     x = coords[0] - width/2
     y = coords[1] - height/2
@@ -67,7 +97,7 @@ def draw_radius(screen, color, coords, radius, radian, return_coords=False):
     pygame.draw.line(screen, color, coords, (x, y))
 
     if return_coords:
-        return x, y
+        return un_xy(x, y)
 
 
 def screen_size():
@@ -80,21 +110,27 @@ def screen_size():
 def main():
     pygame.init()
 
-    time = 60
-
     size = width, height = screen_size()
 
     color = {
         'white': (255, 255, 255),
         'black': (0, 0, 0),
         'light_gray': (100, 100, 100),
-        'red': (255, 0, 0)
+        'red': (255, 0, 0),
+        'green': (0, 255, 0),
+        'blue': (0, 0, 255)
     }
 
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
+    time = 25
     counter = 0
+    increment = 2*math.pi / time
+
+    dp = 5
+    dots = []
+    first = None
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -103,10 +139,8 @@ def main():
         screen.fill(color['white'])
 
         # -- Draw elements -- #
-        if counter > 100:
-            counter = 0
-        else:
-            counter += 1
+        counter += 1
+
         # Graph axes
         # X
         pygame.draw.line(screen, color['light_gray'], xy(-width/2, 0), xy(width/2, 0))
@@ -114,13 +148,32 @@ def main():
         # Y
         pygame.draw.line(screen, color['light_gray'], xy(0, height/2), xy(0, -height/2))
 
-        draw_hollow_circle(screen, color['black'], xy(0, 0), 100, 100)
+        # Circles
+        draw_hollow_circle(screen, color['black'], xy(0, 0), 50)
+        new_x, new_y = draw_radius(screen, color['red'], xy(0, 0), 50, 1 * counter * increment, True)
 
-        draw_radius(screen, color['red'], xy(0, 0), 50, counter * 0.06283)
+        draw_hollow_circle(screen, color['black'], xy(new_x, new_y), 50)
+        new_x, new_y = draw_radius(screen, color['red'], xy(new_x, new_y), 50, -0.8 * counter * increment, True)
+
+        point = (round(new_x, dp), round(new_y, dp))
+
+        if point not in dots:
+            dots.append(point)
+
+        if first is None:
+            prev = first = point
+
+        for dot in dots:
+            pygame.draw.line(screen, color['green'], xy(*prev), xy(*dot))
+
+            pygame.draw.circle(screen, color['blue'], xy(*dot), 1)
+            prev = dot
+
+        # print(len(dots))
         # -- Draw end -- #
 
         pygame.display.flip()
-        clock.tick(time)
+        clock.tick(60)
 
 
 if __name__ == "__main__":
