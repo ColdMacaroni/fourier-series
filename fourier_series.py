@@ -123,7 +123,7 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    time = 25
+    time = 120
     counter = 0
     increment = 2*math.pi / time
 
@@ -138,6 +138,10 @@ def main():
         screen.fill(color['white'])
 
         # -- Draw elements -- #
+        # When `counter` reaches `time` a circle with a constant of one
+        # Would have done a full revolution
+        # e.g. if time=120, the const is 1, and clock.tick is 60 it
+        # will take 2 seconds to do a full revolution
         counter += 1
 
         # Graph axes
