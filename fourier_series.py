@@ -7,6 +7,63 @@ import pygame
 import math
 
 
+class FirstArm:
+
+    def __init__(self, screen, color, counter, increment, radius, dp):
+        self.color = color
+        self.screen = screen
+        self.counter = counter
+        self.increment = increment
+        self.radius = radius
+        self.dp = dp
+
+        self.dots = []
+        self.first = None
+
+
+        self.children = []
+
+        self.new_x = {}
+        self.new_y = {}
+        draw_hollow_circle(screen, color['black'], xy(0, 0), 50)
+
+    def update(self):
+        self.new_x[1], self.new_y[1] = draw_radius(self.screen, self.color['red'], xy(0, 0),
+                                   self.radius, 1 * self.counter * self.increment, True)
+        for child in self.children:
+            child.update()
+            new_x = self.new_x[child.id]
+            new_y = self.new_y[child.id]
+
+            self.point = (round(new_x, self.dp), round(new_y, self.dp))
+
+            if self.point not in self.dots:
+                self.dots.append(self.point)
+
+            if self.first is None:
+                self.prev = self.first = self.point
+
+        # TODO: Find out why the last dot connects to the first always
+        for dot in self.dots:
+            pygame.draw.line(self.screen, self.color['green'], xy(*self.prev), xy(*dot))
+
+            pygame.draw.circle(self.screen, self.color['blue'], xy(*dot), 1)
+            self.prev = dot
+
+
+
+class arm:
+
+    def __init__(self, parent, radius, id):
+        self.parent = parent
+        self.radius = radius
+        self.id = id
+        self.parent.children.append(self)
+
+    def update(self):
+        self.parent.new_x[self.id+1], self.parent.new_y[self.id+1] = draw_radius(self.parent.screen, self.parent.color['red'], xy(0, 0),
+                                   self.radius, 1 * self.parent.counter * self.parent.increment, True)
+
 def xy(x, y):
     """
     A shortcut to center_coords and py_coords.
@@ -123,13 +180,15 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    time = 25
+    time = 100
     counter = 0
-    increment = 2*math.pi / time
+    pi_t = math.pi / time
 
     dp = 5
-    dots = []
-    first = None
+
+    arm0 = FirstArm(screen=screen, color=color, counter=counter, increment=(10*pi_t), radius=100, dp=dp)
+    arm1 =arm(arm0, 50, 1)
+
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -148,32 +207,14 @@ def main():
         pygame.draw.line(screen, color['light_gray'], xy(0, height/2), xy(0, -height/2))
 
         # Circles
-        draw_hollow_circle(screen, color['black'], xy(0, 0), 50)
-        new_x, new_y = draw_radius(screen, color['red'], xy(0, 0), 50, 1 * counter * increment, True)
+        arm0.update()
 
-        draw_hollow_circle(screen, color['black'], xy(new_x, new_y), 50)
-        new_x, new_y = draw_radius(screen, color['red'], xy(new_x, new_y), 50, -0.8 * counter * increment, True)
-
-        point = (round(new_x, dp), round(new_y, dp))
-
-        if point not in dots:
-            dots.append(point)
-
-        if first is None:
-            prev = first = point
-
-        # TODO: Find out why the last dot connects to the first always
-        for dot in dots:
-            pygame.draw.line(screen, color['green'], xy(*prev), xy(*dot))
-
-            pygame.draw.circle(screen, color['blue'], xy(*dot), 1)
-            prev = dot
 
         # print(len(dots))
         # -- Draw end -- #
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(time)
 
 
 if __name__ == "__main__":
