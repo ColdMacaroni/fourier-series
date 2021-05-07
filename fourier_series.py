@@ -17,7 +17,7 @@ class Circle:
         :param radius: Length of the radius (px)
         :param const: The constant for the fourier formula. Float
         :param radian: The radian at which the radius will be drawn
-        
+
         defaults:
         :param circle_color: Color for the circle circumference. rgb
                default=(0, 0, 0)
@@ -40,6 +40,7 @@ class Circle:
         self.origin_coords = origin_coords
         self.radius = radius
         self.const = const
+        self.radian = radian
 
         # Keywords
         self.circle_color = circle_color
@@ -87,7 +88,6 @@ class Circle:
         # -- Draw the circle
         pygame.draw.arc(self.screen, self.circle_color, rect, 0, 2 * math.pi)
 
-
     def draw_radius(self):
         """
         Draws the radius of a circle based on the radian given and the
@@ -96,29 +96,24 @@ class Circle:
         given
         """
         # Get coordinates at circumference
-        x = self.origin_coords[0] + self.radius * math.cos(radian)
-        y = self.origin_coords[1] + self.radius * math.sin(radian)
-    # def draw_radius(screen, color, coords, radius, radian, return_coords=False):
-    #     """
-    #     Draws the radius of a circle based on the radian given and the
-    #     original coordinates.
-    #     Returns the coordinates in the circumference if keyword is
-    #     given
-    #     """
-    #     # The radian has to be negative to make it go the right way
-    #     # I have no idea why but there it is.
-    #     # Probably something to do with the pygame coordinates
-    #     radian *= -1
-    #
-    #     # Get coordinates at circumference
-    #     x = coords[0] + radius * math.cos(radian)
-    #     y = coords[1] + radius * math.sin(radian)
-    #
-    #     # y is negative because y coordinates in pygame go the other way
-    #     pygame.draw.line(screen, color, coords, (x, y))
-    #
-    #     if return_coords:
-    #         return un_xy(x, y)
+        x, y = self.coords_at_circumference()
+
+        pygame.draw.line(self.screen, self.radius_color, self.origin_coords, (x, y))
+
+    def coords_at_circumference(self):
+        """
+        :return: int
+        The coordinates at the circumference at the given radian
+        """
+        # Turn pygame cords to normal coords (center = 0,0)
+        normal_coords = un_xy(*self.origin_coords)
+
+        x = normal_coords[0] + self.radius * math.cos(self.radian)
+        y = normal_coords[1] + self.radius * math.sin(self.radian)
+
+        # Return the coords back to pygame coords
+        return xy(x, y)
+
 
 def xy(x, y):
     """
@@ -170,29 +165,6 @@ def un_py_coords(coords):
     return (coords[0], height + coords[1])
 
 
-def draw_radius(screen, color, coords, radius, radian, return_coords=False):
-    """
-    Draws the radius of a circle based on the radian given and the
-    original coordinates.
-    Returns the coordinates in the circumference if keyword is
-    given
-    """
-    # The radian has to be negative to make it go the right way
-    # I have no idea why but there it is.
-    # Probably something to do with the pygame coordinates
-    radian *= -1
-
-    # Get coordinates at circumference
-    x = coords[0] + radius * math.cos(radian)
-    y = coords[1] + radius * math.sin(radian)
-
-    # y is negative because y coordinates in pygame go the other way
-    pygame.draw.line(screen, color, coords, (x, y))
-
-    if return_coords:
-        return un_xy(x, y)
-
-
 def screen_size():
     """
     Set screen size
@@ -217,7 +189,7 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    test_circle = Circle(screen, xy(0, 0), 50, 1,)
+    test_circle = Circle(screen, xy(0, 0), 50, 1, 0)
 
     # time = 120
     # counter = 0
