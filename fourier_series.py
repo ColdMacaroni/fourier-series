@@ -174,12 +174,12 @@ class DrawDots:
         rounded_dot = (round(dot[0], self.precision), round(dot[1], self.precision))
         return rounded_dot
 
-    def update(self, time, new_coords):
+    def update(self, increment, new_coords):
         """
         Adds the given dot to the objects list of dots and draws them
         """
         # This variable is not useful
-        del time
+        del increment
 
         self.append_dot(new_coords)
         self.graph()
@@ -261,13 +261,31 @@ def screen_size():
     return 600, 600
 
 
-def create_circles(parameters, draw=True):
-    objects = []
-    for parameter in parameters:
+def create_circles(root_circle_parameters, circle_parameters, dotdraw_parameters, draw=True):
+    # Start initial object
+    # This is done so we are able to replace the coordinates for the next objects
+    objects = [Circle(*root_circle_parameters)]
+
+    for i in range(len(circle_parameters)):
+        parameter = circle_parameters[i]
+
+        # Replace previous coordinates for the ones of the previous object
+        parameter[1] = objects[i - 1].coords_at_circumference()
+
         objects.append(Circle(*parameter))
 
+    # Start attaching the objects from the end to the start
+    objects.reverse()
 
+    if draw:
+        objects[0].attach(DrawDots(*dotdraw_parameters))
 
+    # Attach all of them to each other
+    for circle in range(1, len(objects)):
+        objects[circle].attach(objects[circle - 1])
+
+    # Return the root object
+    return objects[-1]
 
 
 def main():
@@ -287,15 +305,9 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    test_circle = Circle(screen, xy(0, 0), 50, 1, 0)
-
-    new_circle = Circle(screen, test_circle.coords_at_circumference(), 50, -0.8, 0)
-
-    draw_obj = DrawDots(screen, color['blue'], color['green'])
-
-    new_circle.attach(draw_obj)
-
-    test_circle.attach(new_circle)
+    circle = create_circles([screen, xy(0, 0), 50, 1, 0], [
+        [screen, None, 50, -0.8, 0],
+    ], [screen, color['blue'], color['green']])
 
     # Increment is how much the radian will change per time unit
     # At an increment of 2*math.pi/120, the radian will go through a
@@ -354,7 +366,7 @@ def main():
         # print(len(dots))
         # -- Draw end -- #
 
-        test_circle.update(increment)
+        circle.update(increment)
 
         pygame.display.flip()
         clock.tick(60)
