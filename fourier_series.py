@@ -5,64 +5,90 @@
 # coords = coordinates
 import pygame
 import math
+import random
+
+from pygame import time
 
 
 class FirstArm:
 
-    def __init__(self, screen, color, counter, increment, radius, dp):
+    def __init__(self, screen=any, color=(255, 0, 0), counter=int, increment=float, radius=int, constant=int, start_angle=0, image_rot=0):
         self.color = color
         self.screen = screen
         self.counter = counter
         self.increment = increment
         self.radius = radius
-        self.dp = dp
-
+        self.constant = constant
         self.dots = []
-        self.first = None
+        self.first=None
+        self.start_angle = deg_to_rads(start_angle)
+        self.image_rot = deg_to_rads(image_rot)
 
 
         self.children = []
 
         self.new_x = {}
         self.new_y = {}
-        draw_hollow_circle(screen, color['black'], xy(0, 0), 50)
 
     def update(self):
-        self.new_x[1], self.new_y[1] = draw_radius(self.screen, self.color['red'], xy(0, 0),
-                                   self.radius, 1 * self.counter * self.increment, True)
+        self.new_x[1], self.new_y[1] = draw_radius(self.screen, (255, 0, 0), xy(0, 0),
+                                   self.radius, self.constant * self.counter * self.increment + self.start_angle + self.image_rot, True)
+        draw_hollow_circle(self.screen, (0, 0, 0), xy(0, 0), self.radius)
+        self.counter += 1
         for child in self.children:
             child.update()
             new_x = self.new_x[child.id]
             new_y = self.new_y[child.id]
 
-            self.point = (round(new_x, self.dp), round(new_y, self.dp))
 
-            if self.point not in self.dots:
-                self.dots.append(self.point)
-
-            if self.first is None:
-                self.prev = self.first = self.point
-
-        # TODO: Find out why the last dot connects to the first always
-        for dot in self.dots:
-            pygame.draw.line(self.screen, self.color['green'], xy(*self.prev), xy(*dot))
-
-            pygame.draw.circle(self.screen, self.color['blue'], xy(*dot), 1)
-            self.prev = dot
 
 
 
 class arm:
 
-    def __init__(self, parent, radius, id):
+    def __init__(self, parent, radius, dp, id, last, constant, color=(random.randint(0, 256), random.randint(0, 256), random.randint(0, 256)), start_angle=0):
         self.parent = parent
         self.radius = radius
         self.id = id
         self.parent.children.append(self)
+        self.dp = dp
+        self.last = last
+        self.constant = constant
+        self.prev = None
+        self.color = color
+        self.start_angle = deg_to_rads(start_angle)
 
     def update(self):
-        self.parent.new_x[self.id+1], self.parent.new_y[self.id+1] = draw_radius(self.parent.screen, self.parent.color['red'], xy(0, 0),
-                                   self.radius, 1 * self.parent.counter * self.parent.increment, True)
+        new_x = self.parent.new_x
+        new_y = self.parent.new_y
+        id = self.id
+        draw_hollow_circle(self.parent.screen, (0, 0, 0), xy(new_x[id], new_y[id]), self.radius)
+        new_x[id+1], new_y[id+1] = draw_radius(self.parent.screen, self.color, xy(new_x[id], new_y[id]),
+                                   self.radius, self.constant * self.parent.counter * self.parent.increment + self.start_angle + self.parent.image_rot, True)
+        if self.last:
+            self.point = (round(new_x[id+1], self.dp), round(new_y[id+1], self.dp))
+
+            if self.point not in self.parent.dots:
+                self.parent.dots.append(self.point)
+
+            if self.parent.first is None:
+                self.prev = self.parent.first = self.point
+                print(self.point)
+
+            # TODO: Find out why the last dot connects to the first always
+            for dot in self.parent.dots:
+                if self.prev is not None:
+                    pygame.draw.line(self.parent.screen, self.parent.color['green'], xy(*self.prev), xy(*dot))
+
+                pygame.draw.circle(self.parent.screen, self.parent.color['blue'], xy(*dot), 1)
+                self.prev = dot
+
+
+def deg_to_rads(degs):
+    rads = (math.pi/180) * degs
+    print(rads)
+    return rads
+
 
 def xy(x, y):
     """
@@ -160,7 +186,7 @@ def screen_size():
     """
     Set screen size
     """
-    return 600, 600
+    return 1500, 1000
 
 
 def main():
@@ -174,20 +200,30 @@ def main():
         'light_gray': (100, 100, 100),
         'red': (255, 0, 0),
         'green': (0, 255, 0),
-        'blue': (0, 0, 255)
+        'blue': (0, 0, 255),
+        'purp': (100, 0, 60)
     }
 
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    time = 100
+    time = 600
     counter = 0
-    pi_t = math.pi / time
+    increment = 2*math.pi / time
 
     dp = 5
 
-    arm0 = FirstArm(screen=screen, color=color, counter=counter, increment=(10*pi_t), radius=100, dp=dp)
-    arm1 =arm(arm0, 50, 1)
+    arm0 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=0, start_angle=30, image_rot=0)
+    # for arm_num in range(1, 5):
+    arm1 = arm(arm0, radius=50, dp=dp, id=1, last=False, constant=1, start_angle=80)
+    arm2 = arm(arm0, radius=150, dp=dp, id=2, last=False, constant=-1, start_angle=-30)
+    arm3 = arm(arm0, radius=200, dp=dp, id=3, last=True, constant=2, start_angle=90)
+
+    arm4 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=0, start_angle=-150, image_rot=0)
+    # for arm_num in range(1, 5):
+    arm5 = arm(arm4, radius=25, dp=dp, id=1, last=False, constant=1, start_angle=-100)
+    arm6 = arm(arm4, radius=50, dp=dp, id=2, last=False, constant=-1, start_angle=-50)
+    arm7 = arm(arm4, radius=75, dp=dp, id=3, last=True, constant=2, start_angle=0)
 
     while 1:
         for event in pygame.event.get():
@@ -197,7 +233,6 @@ def main():
         screen.fill(color['white'])
 
         # -- Draw elements -- #
-        counter += 1
 
         # Graph axes
         # X
@@ -208,13 +243,14 @@ def main():
 
         # Circles
         arm0.update()
+        arm4.update()
 
 
         # print(len(dots))
         # -- Draw end -- #
 
         pygame.display.flip()
-        clock.tick(time)
+        clock.tick(60)
 
 
 if __name__ == "__main__":
