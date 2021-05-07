@@ -67,11 +67,16 @@ class Circle:
     def attach(self, attached):
         self.attached = attached
 
-    def update(self, new_centre_coords):
+    def update(self, time, new_center_coords=None):
+        if new_center_coords is not None:
+            self.center_coords = new_center_coords
+
+        self.radian = self.radian  self.const * time
+
         self.draw_circumference()
         self.draw_radius()
 
-        self.attached.update(self.coords_at_circumference())
+        self.attached.update(time, self.coords_at_circumference())
 
     def draw_circumference(self):
         """
@@ -95,8 +100,6 @@ class Circle:
         """
         Draws the radius of a circle based on the radian given and the
         original coordinates.
-        Returns the coordinates in the circumference if keyword is
-        given
         """
         # Get coordinates at circumference
         x, y = self.coords_at_circumference()
