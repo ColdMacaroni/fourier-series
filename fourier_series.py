@@ -259,6 +259,15 @@ def screen_size():
     return 600, 600
 
 
+def create_circles(parameters, draw=True):
+    objects = []
+    for parameter in parameters:
+        objects.append(Circle(*parameter))
+
+    #WIP
+
+
+
 def main():
     pygame.init()
 
@@ -278,13 +287,14 @@ def main():
 
     test_circle = Circle(screen, xy(0, 0), 50, 1, 0)
 
-    new_circle = Circle(screen, test_circle.coords_at_circumference(), 50, -1, 0)
+    new_circle = Circle(screen, test_circle.coords_at_circumference(), 50, -0.8, 0)
 
     draw_obj = DrawDots(screen, color['blue'], color['green'])
 
     new_circle.attach(draw_obj)
 
     test_circle.attach(new_circle)
+
     # Increment is how much the radian will change per time unit
     # At an increment of 2*math.pi/120, the radian will go through a
     # full rotation after 120 time units. (2s if running at 60fps)
@@ -343,8 +353,6 @@ def main():
         # -- Draw end -- #
 
         test_circle.update(increment)
-
-        print(new_circle.radian)
 
         pygame.display.flip()
         clock.tick(60)
