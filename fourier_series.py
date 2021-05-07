@@ -159,6 +159,7 @@ class DrawDots:
         Adds a dot to the list of dots
         :param new_dot: (x, y) coordinate
         """
+        new_dot = self.round_dot(new_dot)
         if new_dot not in self.dots:
             self.dots.append(new_dot)
 
@@ -193,13 +194,14 @@ class DrawDots:
         """
         Draws the list of dots and connects them with a line
         """
+        print(self.dots)
         # Do not draw line if there is only one dot
         if len(self.dots) == 1:
             self.draw_dot(self.dots[0])
 
         else:
             for dot in range(len(self.dots)):
-                self.draw_line(self.dots[dot], self.dots[dot-1])
+                self.draw_line(self.dots[dot-1], self.dots[dot])
                 self.draw_dot(self.dots[dot])
 
 def xy(x, y):
@@ -264,7 +266,7 @@ def create_circles(parameters, draw=True):
     for parameter in parameters:
         objects.append(Circle(*parameter))
 
-    #WIP
+
 
 
 
