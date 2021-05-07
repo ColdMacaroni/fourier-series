@@ -67,17 +67,26 @@ class Circle:
     def attach(self, attached):
         self.attached = attached
 
-    def update(self, time, increment, new_center_coords=None):
+    def update(self, increment, new_center_coords=None):
         if new_center_coords is not None:
             self.center_coords = new_center_coords
 
-        self.radian = self.radian + self.const * time * increment
+        # Get new radian
+        self.radian = self.radian + self.const * increment
+
+        # Make radian a smaller number
+        # This will hopefully make it more efficient as the memory used
+        # for the variable will not increase past a certain point
+        if self.radian >= math.pi * 2:
+            self.radian = self.radian % (math.pi * 2)
+
+        print(self.radian)
 
         self.draw_circumference()
         self.draw_radius()
 
         if self.attached is not None:
-            self.attached.update(time, increment, new_center_coords=self.coords_at_circumference())
+            self.attached.update(increment, new_center_coords=self.coords_at_circumference())
 
     def draw_circumference(self):
         """
@@ -255,7 +264,7 @@ def main():
         # print(len(dots))
         # -- Draw end -- #
 
-        test_circle.update(time, increment)
+        test_circle.update(increment)
 
         pygame.display.flip()
         clock.tick(60)
