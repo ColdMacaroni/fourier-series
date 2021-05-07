@@ -67,9 +67,9 @@ class Circle:
     def attach(self, attached):
         self.attached = attached
 
-    def update(self, increment, new_center_coords=None):
-        if new_center_coords is not None:
-            self.center_coords = new_center_coords
+    def update(self, increment, new_coords=None):
+        if new_coords is not None:
+            self.center_coords = new_coords
 
         # Get new radian
         self.radian = self.radian + self.const * increment
@@ -88,7 +88,7 @@ class Circle:
         self.draw_radius()
 
         if self.attached is not None:
-            self.attached.update(increment, new_center_coords=self.coords_at_circumference())
+            self.attached.update(increment, new_coords=self.coords_at_circumference())
 
     def draw_circumference(self):
         """
@@ -144,6 +144,7 @@ class DrawDots:
         :param dots: The location for each dot.
         :param dot_size: The size for the dots
         """
+        # A dot is merele an x,y coordinate
         self.screen = screen
         self.dot_color = dot_color
         self.line_color = line_color
@@ -172,14 +173,14 @@ class DrawDots:
         rounded_dot = (round(dot[0], self.precision), round(dot[1], self.precision))
         return rounded_dot
 
-    def update(self, time, new_dot):
+    def update(self, time, new_coords):
         """
         Adds the given dot to the objects list of dots and draws them
         """
         # This variable is not useful
         del time
 
-        self.append_dot(new_dot)
+        self.append_dot(new_coords)
         self.graph()
 
     def draw_dot(self, dot):
@@ -197,9 +198,9 @@ class DrawDots:
             self.draw_dot(self.dots[0])
 
         else:
-            
-        for dot in self.dots:
-
+            for dot in range(len(self.dots)):
+                self.draw_line(self.dots[dot], self.dots[dot-1])
+                self.draw_dot(self.dots[dot])
 
 def xy(x, y):
     """
@@ -278,6 +279,10 @@ def main():
     test_circle = Circle(screen, xy(0, 0), 50, 1, 0)
 
     new_circle = Circle(screen, test_circle.coords_at_circumference(), 50, -1, 0)
+
+    draw_obj = DrawDots(screen, color['blue'], color['green'])
+
+    new_circle.attach(draw_obj)
 
     test_circle.attach(new_circle)
     # Increment is how much the radian will change per time unit
