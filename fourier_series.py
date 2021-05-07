@@ -10,7 +10,10 @@ import random
 
 class FirstArm:
 
-    def __init__(self, screen=any, color=(255, 0, 0), counter=int, increment=float, radius=int, constant=int, start_angle=0, image_rot=0, line_color=(0, 0, 0)):
+    def __init__(self, screen=any, color=(255, 0, 0), counter=int,
+                 increment=float, radius=int, constant=int, start_angle=0,
+                 image_rot=0, line_color=(0, 0, 0), show_radii=True,
+                 show_circumpferences=True):
         self.color = color
         self.screen = screen
         self.counter = counter
@@ -22,6 +25,8 @@ class FirstArm:
         self.start_angle = deg_to_rads(start_angle)
         self.image_rot = deg_to_rads(image_rot)
         self.line_color = line_color
+        self.show_radii = show_radii
+        self.show_circumpferences = show_circumpferences
 
 
         self.children = []
@@ -30,9 +35,17 @@ class FirstArm:
         self.new_y = {}
 
     def update(self):
-        self.new_x[1], self.new_y[1] = draw_radius(self.screen, (255, 0, 0), xy(0, 0),
-                                   self.radius, self.constant * self.counter * self.increment + self.start_angle + self.image_rot, True)
-        draw_hollow_circle(self.screen, (0, 0, 0), xy(0, 0), self.radius)
+        self.new_x[1], self.new_y[1] = draw_radius(self.screen,
+                                                   (255, 0, 0), xy(0, 0),
+                                                   self.radius,
+                                                   self.constant *
+                                                   self.counter *
+                                                   self.increment
+                                                   + self.start_angle
+                                                   + self.image_rot, True,
+                                                   self.show_radii)
+        if self.show_circumpferences:
+            draw_hollow_circle(self.screen, (0, 0, 0), xy(0, 0), self.radius)
         self.counter += 1
         for child in self.children:
             child.update()
@@ -45,7 +58,11 @@ class FirstArm:
 
 class arm:
 
-    def __init__(self, parent, radius, dp, id, last, constant, color=(random.randint(0, 256), random.randint(0, 256), random.randint(0, 256)), start_angle=0):
+    def __init__(self, parent, radius, dp, id, last, constant,
+                 color=(random.randint(0, 256),
+                        random.randint(0, 256),
+                        random.randint(0, 256)),
+                 start_angle=0):
         self.parent = parent
         self.radius = radius
         self.id = id
@@ -61,9 +78,19 @@ class arm:
         new_x = self.parent.new_x
         new_y = self.parent.new_y
         id = self.id
-        draw_hollow_circle(self.parent.screen, (0, 0, 0), xy(new_x[id], new_y[id]), self.radius)
-        new_x[id+1], new_y[id+1] = draw_radius(self.parent.screen, self.color, xy(new_x[id], new_y[id]),
-                                   self.radius, self.constant * self.parent.counter * self.parent.increment + self.start_angle + self.parent.image_rot, True)
+
+        if self.parent.show_circumpferences:
+            draw_hollow_circle(self.parent.screen, (0, 0, 0), xy(new_x[id],
+                                                                 new_y[id]),
+                               self.radius)
+        new_x[id+1], new_y[id+1] = draw_radius(self.parent.screen, self.color,
+                                               xy(new_x[id], new_y[id]),
+                                               self.radius, self.constant *
+                                               self.parent.counter *
+                                               self.parent.increment +
+                                               self.start_angle +
+                                               self.parent.image_rot, True,
+                                               self.parent.show_radii)
         if self.last:
             self.point = (round(new_x[id+1], self.dp), round(new_y[id+1], self.dp))
 
@@ -78,7 +105,7 @@ class arm:
             for dot in self.parent.dots:
                 if self.prev is not None:
                     pygame.draw.line(self.parent.screen, self.parent.line_color, xy(*self.prev), xy(*dot))
-
+                # pygame.draw.line(self.parent.screen, (255, 0, 0), xy(*self.parent.dots[0]), xy(*dot))
                 # pygame.draw.circle(self.parent.screen, self.parent.color['blue'], xy(*dot), 1)
                 self.prev = dot
 
@@ -168,7 +195,7 @@ def draw_hollow_circle(screen, color, coords, radius, height=None, stroke=1):
     pygame.draw.arc(screen, color, rect, 0, 2*math.pi)
 
 
-def draw_radius(screen, color, coords, radius, radian, return_coords=False):
+def draw_radius(screen, color, coords, radius, radian, return_coords=False, show_radius=True):
     """
     Draws the radius of a circle based on the radian given and the
     original coordinates.
@@ -185,7 +212,8 @@ def draw_radius(screen, color, coords, radius, radian, return_coords=False):
     y = coords[1] + radius * math.sin(radian)
 
     # y is negative because y coordinates in pygame go the other way
-    pygame.draw.line(screen, color, coords, (x, y))
+    if show_radius:
+        pygame.draw.line(screen, color, coords, (x, y))
 
     if return_coords:
         return un_xy(x, y)
@@ -222,10 +250,15 @@ def main():
 
     dp = 5
 
-    arm0 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=200, constant=1, start_angle=0, image_rot=90, line_color=(100, 0, 60))
+    arm0 = FirstArm(screen=screen, color=color, counter=counter,
+                    increment=increment, radius=200, constant=1,
+                    start_angle=0, image_rot=90, line_color=(100, 0, 60),
+                    show_circumpferences=True, show_radii=True)
     # for arm_num in range(1, 5):
-    arm1 = arm(arm0, radius=100, dp=dp, id=1, last=False, constant=2, start_angle=0)
-    arm2 = arm(arm0, radius=100, dp=dp, id=2, last=True, constant=-2, start_angle=0)
+    arm1 = arm(arm0, radius=100, dp=dp, id=1, last=False, constant=2,
+               start_angle=0)
+    arm2 = arm(arm0, radius=100, dp=dp, id=2, last=True, constant=-2,
+               start_angle=0)
     # arm3 = arm(arm0, radius=200, dp=dp, id=3, last=True, constant=2, start_angle=90)
 
     # arm4 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=0, start_angle=-150, image_rot=0)
