@@ -77,10 +77,12 @@ class Circle:
         # Make radian a smaller number
         # This will hopefully make it more efficient as the memory used
         # for the variable will not increase past a certain point
+        # The second if is necessary to support negative radians
         if self.radian >= math.pi * 2:
             self.radian = self.radian % (math.pi * 2)
 
-        print(self.radian)
+        elif self.radian <= math.pi * -2:
+            self.radian = 0 - (abs(self.radian) % (math.pi * 2))
 
         self.draw_circumference()
         self.draw_radius()
@@ -129,6 +131,74 @@ class Circle:
 
         # Return the coords back to pygame coords
         return xy(x, y)
+
+
+class DrawDots:
+    def __init__(self, screen, dot_color, line_color,
+                 precision=2, dots=[], dot_size=1):
+        """
+        :param screen: Pygame screen
+        :param dot_color: Color for each dot
+        :param line_color: Color for the line that connects the dots
+        :param precision: The decimal points to round each point
+        :param dots: The location for each dot.
+        :param dot_size: The size for the dots
+        """
+        self.screen = screen
+        self.dot_color = dot_color
+        self.line_color = line_color
+
+        # Keywords
+        self.precision = precision
+        self.dots = dots
+        self.dot_size = dot_size
+
+    def append_dot(self, new_dot):
+        """
+        Adds a dot to the list of dots
+        :param new_dot: (x, y) coordinate
+        """
+        if new_dot not in self.dots:
+            self.dots.append(new_dot)
+
+    def round_dot(self, dot):
+        """
+        Rounds a dot to the current object's precision
+        if self.precision=2
+        (2.4345, 5.4534) -> (2.43, 5.45)
+        :param dot: (x, y) coordinate
+        :return (x, y) coordinate
+        """
+        rounded_dot = (round(dot[0], self.precision), round(dot[1], self.precision))
+        return rounded_dot
+
+    def update(self, time, new_dot):
+        """
+        Adds the given dot to the objects list of dots and draws them
+        """
+        # This variable is not useful
+        del time
+
+        self.append_dot(new_dot)
+        self.graph()
+
+    def draw_dot(self, dot):
+        pygame.draw.circle(self.screen, self.dot_color, dot, self.dot_size)
+
+    def draw_line(self, dot1, dot2):
+        pygame.draw.line(self.screen, self.line_color, dot1, dot2)
+
+    def graph(self):
+        """
+        Draws the list of dots and connects them with a line
+        """
+        # Do not draw line if there is only one dot
+        if len(self.dots) == 1:
+            self.draw_dot(self.dots[0])
+
+        else:
+            
+        for dot in self.dots:
 
 
 def xy(x, y):
@@ -207,6 +277,9 @@ def main():
 
     test_circle = Circle(screen, xy(0, 0), 50, 1, 0)
 
+    new_circle = Circle(screen, test_circle.coords_at_circumference(), 50, -1, 0)
+
+    test_circle.attach(new_circle)
     # Increment is how much the radian will change per time unit
     # At an increment of 2*math.pi/120, the radian will go through a
     # full rotation after 120 time units. (2s if running at 60fps)
@@ -265,6 +338,8 @@ def main():
         # -- Draw end -- #
 
         test_circle.update(increment)
+
+        print(new_circle.radian)
 
         pygame.display.flip()
         clock.tick(60)
