@@ -8,6 +8,7 @@ import math
 
 class Circle:
     def __init__(self):
+        # HELP
         pass
 
 def xy(x, y):
