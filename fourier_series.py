@@ -88,7 +88,8 @@ class Circle:
         self.draw_radius()
 
         if self.attached_object is not None:
-            self.attached_object.update(increment, new_coords=self.coords_at_circumference())
+            coords_param = self.coords_at_circumference()
+            self.attached_object.update(increment, new_coords=coords_param)
 
     def draw_circumference(self):
         """
@@ -98,7 +99,7 @@ class Circle:
         height = width = self.radius * 2
 
         # -- Create a rectangle object for the circle.
-        # Shift the rect so the centre of the circle is at the given coordinates
+        # Shift the rect so the center of the circle is at given coordinates
         x = self.center_coords[0] - width / 2
         y = self.center_coords[1] - height / 2
 
@@ -116,7 +117,10 @@ class Circle:
         # Get coordinates at circumference
         x, y = self.coords_at_circumference()
 
-        pygame.draw.line(self.screen, self.radius_color, self.center_coords, (x, y))
+        pygame.draw.line(self.screen,
+                         self.radius_color,
+                         self.center_coords,
+                         (x, y))
 
     def coords_at_circumference(self):
         """
@@ -174,7 +178,8 @@ class DrawDots:
         :param dot: (x, y) coordinate
         :return (x, y) coordinate
         """
-        rounded_dot = (round(dot[0], self.precision), round(dot[1], self.precision))
+        rounded_dot = (round(dot[0], self.precision),
+                       round(dot[1], self.precision))
         return rounded_dot
 
     def update(self, increment, new_coords):
@@ -246,13 +251,17 @@ def un_center_coords(coords, plane=None):
 
 
 def py_coords(coords):
-    """Convert coordinates into pygame coordinates (lower-left => top left)."""
+    """
+    Convert coordinates into pygame coordinates (lower-left => top left).
+    """
     height = screen_size()[1]
     return coords[0], height - coords[1]
 
 
 def un_py_coords(coords):
-    """Convert coordinates into cardinal coordinates (top-left => lower left)."""
+    """
+    Convert coordinates into cardinal coordinates (top-left => lower left).
+    """
     height = screen_size()[1]
     return coords[0], height + coords[1]
 
@@ -264,9 +273,11 @@ def screen_size():
     return 600, 600
 
 
-def create_circles(root_circle_parameters, circle_parameters, dotdraw_parameters=None, draw=True):
+def create_circles(root_circle_parameters, circle_parameters,
+                   dotdraw_parameters=None, draw=True):
     # Start initial object
-    # This is done so we are able to replace the coordinates for the next objects
+    # This is done so we are able to replace the
+    # coordinates for the next objects
     objects = [Circle(*root_circle_parameters)]
 
     for i in range(len(circle_parameters)):
@@ -331,45 +342,23 @@ def main():
         screen.fill(color['white'])
 
         # -- Draw elements -- #
-        # When `counter` reaches `time` a circle with a constant of one
-        # Would have done a full revolution
-        # e.g. if time=120, the const is 1, and clock.tick is 60 it
-        # will take 2 seconds to do a full revolution
-        # counter += 1
-
         # Graph axes
         # X
-        pygame.draw.line(screen, color['light_gray'], xy(-width/2, 0), xy(width/2, 0))
+        pygame.draw.line(screen,
+                         color['light_gray'],
+                         xy(-width/2, 0),
+                         xy(width/2, 0))
 
         # Y
-        pygame.draw.line(screen, color['light_gray'], xy(0, height/2), xy(0, -height/2))
+        pygame.draw.line(screen,
+                         color['light_gray'],
+                         xy(0, height/2),
+                         xy(0, -height/2))
 
-        # # Circles
-        # draw_hollow_circle(screen, color['black'], xy(0, 0), 50)
-        # new_x, new_y = draw_radius(screen, color['red'], xy(0, 0), 50, 1 * counter * increment, True)
-        #
-        # draw_hollow_circle(screen, color['black'], xy(new_x, new_y), 50)
-        # new_x, new_y = draw_radius(screen, color['red'], xy(new_x, new_y), 50, -0.8 * counter * increment, True)
-        #
-        # point = (round(new_x, dp), round(new_y, dp))
-        #
-        # if point not in dots:
-        #     dots.append(point)
-        #
-        # if first is None:
-        #     prev = first = point
-        #
-        # # TODO: Find out why the last dot connects to the first always
-        # for dot in dots:
-        #     pygame.draw.line(screen, color['green'], xy(*prev), xy(*dot))
-        #
-        #     pygame.draw.circle(screen, color['blue'], xy(*dot), 1)
-        #     prev = dot
-
-        # print(len(dots))
-        # -- Draw end -- #
-
+        # Circles
         circle.update(increment)
+
+        # --
 
         pygame.display.flip()
         clock.tick(60)
