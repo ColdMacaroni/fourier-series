@@ -6,15 +6,40 @@
 import pygame
 import math
 
+
 class Circle:
     def __init__(self, origin_coords, radius, const,
-                 circle_color=(0, 0, 0), radius_color=(255, 0, 0)):
+                 circle_color=(0, 0, 0), radius_color=(255, 0, 0),
+                 show_circumference=True, show_radius=True):
         # Start the boy up
         self.origin_coords = origin_coords
         self.radius = radius
         self.const = const
         self.circle_color = circle_color
         self.radius_color = radius_color
+
+        self.show_circumference = show_circumference
+        self.show_radius = show_radius
+
+        self.attached = None
+
+    def config(self, show_circumference=None, show_radius=None):
+        """
+        Change visibility settings during runtime
+        :param show_circumference: Bool
+        :param show_radius: Bool
+        """
+        if show_circumference is not None:
+            self.show_circumference = show_circumference
+
+        if show_radius is not None:
+            self.show_radius = show_radius
+
+    def draw_circumference(self):
+        pass
+
+    def draw_radius(self):
+        pass
 
 
 def xy(x, y):
