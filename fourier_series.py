@@ -213,17 +213,17 @@ def main():
 
     dp = 5
 
-    arm0 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=0, start_angle=30, image_rot=0)
+    arm0 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=1, start_angle=0, image_rot=90)
     # for arm_num in range(1, 5):
-    arm1 = arm(arm0, radius=50, dp=dp, id=1, last=False, constant=1, start_angle=80)
-    arm2 = arm(arm0, radius=150, dp=dp, id=2, last=False, constant=-1, start_angle=-30)
-    arm3 = arm(arm0, radius=200, dp=dp, id=3, last=True, constant=2, start_angle=90)
+    arm1 = arm(arm0, radius=50, dp=dp, id=1, last=False, constant=2, start_angle=0)
+    arm2 = arm(arm0, radius=50, dp=dp, id=2, last=True, constant=-2, start_angle=0)
+    # arm3 = arm(arm0, radius=200, dp=dp, id=3, last=True, constant=2, start_angle=90)
 
-    arm4 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=0, start_angle=-150, image_rot=0)
-    # for arm_num in range(1, 5):
-    arm5 = arm(arm4, radius=25, dp=dp, id=1, last=False, constant=1, start_angle=-100)
-    arm6 = arm(arm4, radius=50, dp=dp, id=2, last=False, constant=-1, start_angle=-50)
-    arm7 = arm(arm4, radius=75, dp=dp, id=3, last=True, constant=2, start_angle=0)
+    # arm4 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=0, start_angle=-150, image_rot=0)
+    # # for arm_num in range(1, 5):
+    # arm5 = arm(arm4, radius=25, dp=dp, id=1, last=False, constant=1, start_angle=-100)
+    # arm6 = arm(arm4, radius=50, dp=dp, id=2, last=False, constant=-1, start_angle=-50)
+    # arm7 = arm(arm4, radius=75, dp=dp, id=3, last=True, constant=2, start_angle=0)
 
     while 1:
         for event in pygame.event.get():
@@ -243,7 +243,7 @@ def main():
 
         # Circles
         arm0.update()
-        arm4.update()
+        # arm4.update()
 
 
         # print(len(dots))
