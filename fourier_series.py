@@ -8,7 +8,7 @@ import math
 
 
 class Circle:
-    def __init__(self, screen, origin_coords, radius, const,
+    def __init__(self, screen, origin_coords, radius, const, radian,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
                  show_circumference=True, show_radius=True, stroke=1):
         """
@@ -16,7 +16,8 @@ class Circle:
         :param origin_coords: Coordinates for the circle's centre (x, y)
         :param radius: Length of the radius (px)
         :param const: The constant for the fourier formula. Float
-
+        :param radian: The radian at which the radius will be drawn
+        
         defaults:
         :param circle_color: Color for the circle circumference. rgb
                default=(0, 0, 0)
@@ -64,6 +65,9 @@ class Circle:
 
     def update(self):
         self.draw_circumference()
+        self.draw_radius()
+
+        # self.attached
 
     def draw_circumference(self):
         """
@@ -83,27 +87,38 @@ class Circle:
         # -- Draw the circle
         pygame.draw.arc(self.screen, self.circle_color, rect, 0, 2 * math.pi)
 
-    # def draw_hollow_circle(screen, color, coords, radius, height=None, stroke=1):
-    #     """
-    #     Draws a circle with its centre at the x y coordinates.
-    #     """
-    #     width = radius * 2
-    #
-    #     if height is None:
-    #         height = width
-    #
-    #     # Make center at the given coordinates
-    #     x = coords[0] - width / 2
-    #     y = coords[1] - height / 2
-    #
-    #     # Create the Rect object
-    #     rect = pygame.Rect((x, y), (width, height))
-    #
-    #     pygame.draw.arc(screen, color, rect, 0, 2 * math.pi)
 
     def draw_radius(self):
-        pass
-
+        """
+        Draws the radius of a circle based on the radian given and the
+        original coordinates.
+        Returns the coordinates in the circumference if keyword is
+        given
+        """
+        # Get coordinates at circumference
+        x = self.origin_coords[0] + self.radius * math.cos(radian)
+        y = self.origin_coords[1] + self.radius * math.sin(radian)
+    # def draw_radius(screen, color, coords, radius, radian, return_coords=False):
+    #     """
+    #     Draws the radius of a circle based on the radian given and the
+    #     original coordinates.
+    #     Returns the coordinates in the circumference if keyword is
+    #     given
+    #     """
+    #     # The radian has to be negative to make it go the right way
+    #     # I have no idea why but there it is.
+    #     # Probably something to do with the pygame coordinates
+    #     radian *= -1
+    #
+    #     # Get coordinates at circumference
+    #     x = coords[0] + radius * math.cos(radian)
+    #     y = coords[1] + radius * math.sin(radian)
+    #
+    #     # y is negative because y coordinates in pygame go the other way
+    #     pygame.draw.line(screen, color, coords, (x, y))
+    #
+    #     if return_coords:
+    #         return un_xy(x, y)
 
 def xy(x, y):
     """
@@ -153,25 +168,6 @@ def un_py_coords(coords):
     """Convert coordinates into cardinal coordinates (top-left => lower left)."""
     height = screen_size()[1]
     return (coords[0], height + coords[1])
-
-
-def draw_hollow_circle(screen, color, coords, radius, height=None, stroke=1):
-    """
-    Draws a circle with its centre at the x y coordinates.
-    """
-    width = radius * 2
-
-    if height is None:
-        height = width
-
-    # Make center at the given coordinates
-    x = coords[0] - width/2
-    y = coords[1] - height/2
-
-    # Create the Rect object
-    rect = pygame.Rect((x, y), (width, height))
-
-    pygame.draw.arc(screen, color, rect, 0, 2*math.pi)
 
 
 def draw_radius(screen, color, coords, radius, radian, return_coords=False):
@@ -277,7 +273,7 @@ def main():
         # -- Draw end -- #
 
         test_circle.update()
-        
+
         pygame.display.flip()
         clock.tick(60)
 
