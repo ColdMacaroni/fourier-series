@@ -320,7 +320,7 @@ def main():
     clock = pygame.time.Clock()
 
     # Generate circle series
-    circle = create_circles([screen, xy(0, 0), 50, 1, 0], [
+    circle = create_circles([screen, xy(0, 0), 50, 0, 2], [
         [screen, None, 35, -0.8, 0],
         [screen, None, 20, 2, 0.5],
     ], [screen, color['blue'], color['green']])
