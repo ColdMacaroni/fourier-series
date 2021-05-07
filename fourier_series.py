@@ -50,7 +50,7 @@ class Circle:
         self.stroke = stroke
 
         # Default
-        self.attached = None
+        self.attached_object = None
 
     def config(self, show_circumference=None, show_radius=None):
         """
@@ -65,7 +65,7 @@ class Circle:
             self.show_radius = show_radius
 
     def attach(self, attached):
-        self.attached = attached
+        self.attached_object = attached
 
     def update(self, increment, new_coords=None):
         if new_coords is not None:
@@ -87,8 +87,8 @@ class Circle:
         self.draw_circumference()
         self.draw_radius()
 
-        if self.attached is not None:
-            self.attached.update(increment, new_coords=self.coords_at_circumference())
+        if self.attached_object is not None:
+            self.attached_object.update(increment, new_coords=self.coords_at_circumference())
 
     def draw_circumference(self):
         """
@@ -194,7 +194,6 @@ class DrawDots:
         """
         Draws the list of dots and connects them with a line
         """
-        print(self.dots)
         # Do not draw line if there is only one dot
         if len(self.dots) == 1:
             self.draw_dot(self.dots[0])
@@ -305,14 +304,16 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
+    # Generate circle series
     circle = create_circles([screen, xy(0, 0), 50, 1, 0], [
-        [screen, None, 50, -0.8, 0],
+        [screen, None, 35, -0.8, 0],
+        [screen, None, 20, 2, 0.5],
     ], [screen, color['blue'], color['green']])
 
     # Increment is how much the radian will change per time unit
     # At an increment of 2*math.pi/120, the radian will go through a
     # full rotation after 120 time units. (2s if running at 60fps)
-    time = 0
+
     increment = 2*math.pi / 120
 
     # dp = 5
@@ -322,8 +323,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
-
-        time += 1
 
         screen.fill(color['white'])
 
