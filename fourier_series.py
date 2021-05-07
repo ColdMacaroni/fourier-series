@@ -135,7 +135,7 @@ class Circle:
 
 class DrawDots:
     def __init__(self, screen, dot_color, line_color,
-                 precision=2, dots=[], dot_size=1):
+                 precision=2, dots=None, dot_size=1):
         """
         :param screen: Pygame screen
         :param dot_color: Color for each dot
@@ -153,6 +153,9 @@ class DrawDots:
         self.precision = precision
         self.dots = dots
         self.dot_size = dot_size
+
+        if self.dots is None:
+            self.dots = []
 
     def append_dot(self, new_dot):
         """
@@ -227,7 +230,7 @@ def center_coords(coords, plane=None):
     else:
         width, height = plane[0], plane[1]
 
-    return tuple(width/2 + coords[0], height/2 + coords[1])
+    return width/2 + coords[0], height/2 + coords[1]
 
 
 def un_center_coords(coords, plane=None):
@@ -239,19 +242,19 @@ def un_center_coords(coords, plane=None):
     else:
         width, height = plane[0], plane[1]
 
-    return tuple(coords[0] - width/2, coords[1] - height/2)
+    return coords[0] - width/2, coords[1] - height/2
 
 
 def py_coords(coords):
     """Convert coordinates into pygame coordinates (lower-left => top left)."""
     height = screen_size()[1]
-    return tuple(coords[0], height - coords[1])
+    return coords[0], height - coords[1]
 
 
 def un_py_coords(coords):
     """Convert coordinates into cardinal coordinates (top-left => lower left)."""
     height = screen_size()[1]
-    return tuple(coords[0], height + coords[1])
+    return coords[0], height + coords[1]
 
 
 def screen_size():
