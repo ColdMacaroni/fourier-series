@@ -7,9 +7,15 @@ import pygame
 import math
 
 class Circle:
-    def __init__(self):
-        # HELP
-        pass
+    def __init__(self, origin_coords, radius, const,
+                 circle_color=(0, 0, 0), radius_color=(255, 0, 0)):
+        # Start the boy up
+        self.origin_coords = origin_coords
+        self.radius = radius
+        self.const = const
+        self.circle_color = circle_color
+        self.radius_color = radius_color
+
 
 def xy(x, y):
     """
