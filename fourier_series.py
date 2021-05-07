@@ -62,8 +62,26 @@ class Circle:
         if show_radius is not None:
             self.show_radius = show_radius
 
+    def update(self):
+        self.draw_circumference()
+
     def draw_circumference(self):
-        pass
+        """
+        Draws the circumference
+        """
+        # Same width and height. i.e. perfect circle.
+        height = width = self.radius * 2
+
+        # -- Create a rectangle object for the circle.
+        # Shift the rect so the centre of the circle is at the given coordinates
+        x = self.origin_coords[0] - width / 2
+        y = self.origin_coords[1] - height / 2
+
+        # Create the rectangle object
+        rect = pygame.Rect((x, y), (width, height))
+
+        # -- Draw the circle
+        pygame.draw.arc(self.screen, self.circle_color, rect, 0, 2 * math.pi)
 
     # def draw_hollow_circle(screen, color, coords, radius, height=None, stroke=1):
     #     """
@@ -231,27 +249,27 @@ def main():
         # Y
         pygame.draw.line(screen, color['light_gray'], xy(0, height/2), xy(0, -height/2))
 
-        # Circles
-        draw_hollow_circle(screen, color['black'], xy(0, 0), 50)
-        new_x, new_y = draw_radius(screen, color['red'], xy(0, 0), 50, 1 * counter * increment, True)
-
-        draw_hollow_circle(screen, color['black'], xy(new_x, new_y), 50)
-        new_x, new_y = draw_radius(screen, color['red'], xy(new_x, new_y), 50, -0.8 * counter * increment, True)
-
-        point = (round(new_x, dp), round(new_y, dp))
-
-        if point not in dots:
-            dots.append(point)
-
-        if first is None:
-            prev = first = point
-
-        # TODO: Find out why the last dot connects to the first always
-        for dot in dots:
-            pygame.draw.line(screen, color['green'], xy(*prev), xy(*dot))
-
-            pygame.draw.circle(screen, color['blue'], xy(*dot), 1)
-            prev = dot
+        # # Circles
+        # draw_hollow_circle(screen, color['black'], xy(0, 0), 50)
+        # new_x, new_y = draw_radius(screen, color['red'], xy(0, 0), 50, 1 * counter * increment, True)
+        #
+        # draw_hollow_circle(screen, color['black'], xy(new_x, new_y), 50)
+        # new_x, new_y = draw_radius(screen, color['red'], xy(new_x, new_y), 50, -0.8 * counter * increment, True)
+        #
+        # point = (round(new_x, dp), round(new_y, dp))
+        #
+        # if point not in dots:
+        #     dots.append(point)
+        #
+        # if first is None:
+        #     prev = first = point
+        #
+        # # TODO: Find out why the last dot connects to the first always
+        # for dot in dots:
+        #     pygame.draw.line(screen, color['green'], xy(*prev), xy(*dot))
+        #
+        #     pygame.draw.circle(screen, color['blue'], xy(*dot), 1)
+        #     prev = dot
 
         # print(len(dots))
         # -- Draw end -- #
