@@ -7,8 +7,6 @@ import pygame
 import math
 import random
 
-from pygame import time
-
 
 class FirstArm:
 
@@ -84,10 +82,20 @@ class arm:
                 self.prev = dot
 
 
+def units_to_pixels(units):
+    pixels = 50*units
+    return pixels
+
+
 def deg_to_rads(degs):
     rads = (math.pi/180) * degs
     print(rads)
     return rads
+
+
+def rads_to_degs(rads):
+    degs = 180/math.pi * rads
+    return degs
 
 
 def xy(x, y):
@@ -207,9 +215,9 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    time = 600
+    detail_level = 600
     counter = 0
-    increment = 2*math.pi / time
+    increment = 2*math.pi / detail_level
 
     dp = 5
 
