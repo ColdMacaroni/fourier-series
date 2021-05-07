@@ -221,13 +221,15 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    time = 120
-    counter = 0
-    increment = 2*math.pi / time
+    test_circle = Circle(screen, xy(0, 0), 50, 1,)
 
-    dp = 5
-    dots = []
-    first = None
+    # time = 120
+    # counter = 0
+    # increment = 2*math.pi / time
+
+    # dp = 5
+    # dots = []
+    # first = None
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -240,7 +242,7 @@ def main():
         # Would have done a full revolution
         # e.g. if time=120, the const is 1, and clock.tick is 60 it
         # will take 2 seconds to do a full revolution
-        counter += 1
+        # counter += 1
 
         # Graph axes
         # X
@@ -274,6 +276,8 @@ def main():
         # print(len(dots))
         # -- Draw end -- #
 
+        test_circle.update()
+        
         pygame.display.flip()
         clock.tick(60)
 
