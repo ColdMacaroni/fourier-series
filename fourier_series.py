@@ -8,19 +8,46 @@ import math
 
 
 class Circle:
-    def __init__(self, origin_coords, radius, const,
+    def __init__(self, screen, origin_coords, radius, const,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
-                 show_circumference=True, show_radius=True):
+                 show_circumference=True, show_radius=True, stroke=1):
+        """
+        :param screen: Pygame screen
+        :param origin_coords: Coordinates for the circle's centre (x, y)
+        :param radius: Length of the radius (px)
+        :param const: The constant for the fourier formula. Float
+
+        defaults:
+        :param circle_color: Color for the circle circumference. rgb
+               default=(0, 0, 0)
+
+        :param radius_color: Color for the radius. rgb
+               default=(255, 0, 0)
+
+        :param show_circumference: If the circumference should be drawn. Bool
+               default=True
+
+        :param show_radius: If the radius should be draw. Bool
+               default=True
+
+        :param stroke: Stroke used for the circle and the radius.
+               default=1
+        """
+
         # Start the boy up
+        self.screen = screen
         self.origin_coords = origin_coords
         self.radius = radius
         self.const = const
+
+        # Keywords
         self.circle_color = circle_color
         self.radius_color = radius_color
-
         self.show_circumference = show_circumference
         self.show_radius = show_radius
+        self.stroke = stroke
 
+        # Default
         self.attached = None
 
     def config(self, show_circumference=None, show_radius=None):
@@ -37,6 +64,24 @@ class Circle:
 
     def draw_circumference(self):
         pass
+
+    # def draw_hollow_circle(screen, color, coords, radius, height=None, stroke=1):
+    #     """
+    #     Draws a circle with its centre at the x y coordinates.
+    #     """
+    #     width = radius * 2
+    #
+    #     if height is None:
+    #         height = width
+    #
+    #     # Make center at the given coordinates
+    #     x = coords[0] - width / 2
+    #     y = coords[1] - height / 2
+    #
+    #     # Create the Rect object
+    #     rect = pygame.Rect((x, y), (width, height))
+    #
+    #     pygame.draw.arc(screen, color, rect, 0, 2 * math.pi)
 
     def draw_radius(self):
         pass
