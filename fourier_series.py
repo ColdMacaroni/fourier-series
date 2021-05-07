@@ -203,6 +203,7 @@ class DrawDots:
                 self.draw_line(self.dots[dot-1], self.dots[dot])
                 self.draw_dot(self.dots[dot])
 
+
 def xy(x, y):
     """
     A shortcut to center_coords and py_coords.
@@ -226,7 +227,7 @@ def center_coords(coords, plane=None):
     else:
         width, height = plane[0], plane[1]
 
-    return (width/2 + coords[0], height/2 + coords[1])
+    return tuple(width/2 + coords[0], height/2 + coords[1])
 
 
 def un_center_coords(coords, plane=None):
@@ -238,19 +239,19 @@ def un_center_coords(coords, plane=None):
     else:
         width, height = plane[0], plane[1]
 
-    return (coords[0] - width/2, coords[1] - height/2)
+    return tuple(coords[0] - width/2, coords[1] - height/2)
 
 
 def py_coords(coords):
     """Convert coordinates into pygame coordinates (lower-left => top left)."""
     height = screen_size()[1]
-    return (coords[0], height - coords[1])
+    return tuple(coords[0], height - coords[1])
 
 
 def un_py_coords(coords):
     """Convert coordinates into cardinal coordinates (top-left => lower left)."""
     height = screen_size()[1]
-    return (coords[0], height + coords[1])
+    return tuple(coords[0], height + coords[1])
 
 
 def screen_size():
@@ -260,7 +261,7 @@ def screen_size():
     return 600, 600
 
 
-def create_circles(root_circle_parameters, circle_parameters, dotdraw_parameters, draw=True):
+def create_circles(root_circle_parameters, circle_parameters, dotdraw_parameters=None, draw=True):
     # Start initial object
     # This is done so we are able to replace the coordinates for the next objects
     objects = [Circle(*root_circle_parameters)]
