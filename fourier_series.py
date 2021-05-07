@@ -8,12 +8,12 @@ import math
 
 
 class Circle:
-    def __init__(self, screen, origin_coords, radius, const, radian,
+    def __init__(self, screen, center_coords, radius, const, radian,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
                  show_circumference=True, show_radius=True, stroke=1):
         """
         :param screen: Pygame screen
-        :param origin_coords: Coordinates for the circle's centre (x, y)
+        :param center_coords: Coordinates for the circle's centre (x, y)
         :param radius: Length of the radius (px)
         :param const: The constant for the fourier formula. Float
         :param radian: The radian at which the radius will be drawn
@@ -37,7 +37,7 @@ class Circle:
 
         # Start the boy up
         self.screen = screen
-        self.origin_coords = origin_coords
+        self.center_coords = center_coords
         self.radius = radius
         self.const = const
         self.radian = radian
@@ -64,11 +64,14 @@ class Circle:
         if show_radius is not None:
             self.show_radius = show_radius
 
-    def update(self):
+    def attach(self, attached):
+        self.attached = attached
+
+    def update(self, new_centre_coords):
         self.draw_circumference()
         self.draw_radius()
 
-        # self.attached
+        self.attached.update(self.coords_at_circumference())
 
     def draw_circumference(self):
         """
@@ -79,8 +82,8 @@ class Circle:
 
         # -- Create a rectangle object for the circle.
         # Shift the rect so the centre of the circle is at the given coordinates
-        x = self.origin_coords[0] - width / 2
-        y = self.origin_coords[1] - height / 2
+        x = self.center_coords[0] - width / 2
+        y = self.center_coords[1] - height / 2
 
         # Create the rectangle object
         rect = pygame.Rect((x, y), (width, height))
@@ -98,7 +101,7 @@ class Circle:
         # Get coordinates at circumference
         x, y = self.coords_at_circumference()
 
-        pygame.draw.line(self.screen, self.radius_color, self.origin_coords, (x, y))
+        pygame.draw.line(self.screen, self.radius_color, self.center_coords, (x, y))
 
     def coords_at_circumference(self):
         """
@@ -106,7 +109,7 @@ class Circle:
         The coordinates at the circumference at the given radian
         """
         # Turn pygame cords to normal coords (center = 0,0)
-        normal_coords = un_xy(*self.origin_coords)
+        normal_coords = un_xy(*self.center_coords)
 
         x = normal_coords[0] + self.radius * math.cos(self.radian)
         y = normal_coords[1] + self.radius * math.sin(self.radian)
