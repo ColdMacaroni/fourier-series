@@ -10,7 +10,7 @@ import random
 
 class FirstArm:
 
-    def __init__(self, screen=any, color=(255, 0, 0), counter=int, increment=float, radius=int, constant=int, start_angle=0, image_rot=0):
+    def __init__(self, screen=any, color=(255, 0, 0), counter=int, increment=float, radius=int, constant=int, start_angle=0, image_rot=0, line_color=(0, 0, 0)):
         self.color = color
         self.screen = screen
         self.counter = counter
@@ -21,6 +21,7 @@ class FirstArm:
         self.first=None
         self.start_angle = deg_to_rads(start_angle)
         self.image_rot = deg_to_rads(image_rot)
+        self.line_color = line_color
 
 
         self.children = []
@@ -76,9 +77,9 @@ class arm:
             # TODO: Find out why the last dot connects to the first always
             for dot in self.parent.dots:
                 if self.prev is not None:
-                    pygame.draw.line(self.parent.screen, self.parent.color['green'], xy(*self.prev), xy(*dot))
+                    pygame.draw.line(self.parent.screen, self.parent.line_color, xy(*self.prev), xy(*dot))
 
-                pygame.draw.circle(self.parent.screen, self.parent.color['blue'], xy(*dot), 1)
+                # pygame.draw.circle(self.parent.screen, self.parent.color['blue'], xy(*dot), 1)
                 self.prev = dot
 
 
@@ -221,10 +222,10 @@ def main():
 
     dp = 5
 
-    arm0 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=1, start_angle=0, image_rot=90)
+    arm0 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=200, constant=1, start_angle=0, image_rot=90, line_color=(100, 0, 60))
     # for arm_num in range(1, 5):
-    arm1 = arm(arm0, radius=50, dp=dp, id=1, last=False, constant=2, start_angle=0)
-    arm2 = arm(arm0, radius=50, dp=dp, id=2, last=True, constant=-2, start_angle=0)
+    arm1 = arm(arm0, radius=100, dp=dp, id=1, last=False, constant=2, start_angle=0)
+    arm2 = arm(arm0, radius=100, dp=dp, id=2, last=True, constant=-2, start_angle=0)
     # arm3 = arm(arm0, radius=200, dp=dp, id=3, last=True, constant=2, start_angle=90)
 
     # arm4 = FirstArm(screen=screen, color=color, counter=counter, increment=increment, radius=100, constant=0, start_angle=-150, image_rot=0)
