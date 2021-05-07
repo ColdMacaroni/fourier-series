@@ -8,12 +8,12 @@ import math
 
 
 class Circle:
-    def __init__(self, screen, center_coords, radius, const, radian,
+    def __init__(self, screen, coords, radius, const, radian,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
                  show_circumference=True, show_radius=True, stroke=1):
         """
         :param screen: Pygame screen
-        :param center_coords: Coordinates for the circle's centre (x, y)
+        :param coords: Coordinates for the circle's centre (x, y)
         :param radius: Length of the radius (px)
         :param const: The constant for the fourier formula. Float
         :param radian: The radian at which the radius will be drawn
@@ -37,7 +37,7 @@ class Circle:
 
         # Start the boy up
         self.screen = screen
-        self.center_coords = center_coords
+        self.center_coords = coords
         self.radius = radius
         self.const = const
         self.radian = radian
@@ -67,16 +67,17 @@ class Circle:
     def attach(self, attached):
         self.attached = attached
 
-    def update(self, time, new_center_coords=None):
+    def update(self, time, increment, new_center_coords=None):
         if new_center_coords is not None:
             self.center_coords = new_center_coords
 
-        self.radian = self.radian  self.const * time
+        self.radian = self.radian + self.const * time * increment
 
         self.draw_circumference()
         self.draw_radius()
 
-        self.attached.update(time, self.coords_at_circumference())
+        if self.attached is not None:
+            self.attached.update(time, increment, new_center_coords=self.coords_at_circumference())
 
     def draw_circumference(self):
         """
@@ -197,9 +198,11 @@ def main():
 
     test_circle = Circle(screen, xy(0, 0), 50, 1, 0)
 
-    # time = 120
-    # counter = 0
-    # increment = 2*math.pi / time
+    # Increment is how much the radian will change per time unit
+    # At an increment of 2*math.pi/120, the radian will go through a
+    # full rotation after 120 time units. (2s if running at 60fps)
+    time = 0
+    increment = 2*math.pi / 120
 
     # dp = 5
     # dots = []
@@ -208,6 +211,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+
+        time += 1
 
         screen.fill(color['white'])
 
@@ -250,7 +255,7 @@ def main():
         # print(len(dots))
         # -- Draw end -- #
 
-        test_circle.update()
+        test_circle.update(time, increment)
 
         pygame.display.flip()
         clock.tick(60)
