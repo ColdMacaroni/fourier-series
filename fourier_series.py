@@ -83,6 +83,7 @@ class Circle:
         # and radius point (equation + parent). Then send the radius
         # point to its own child
 
+    # -- Utility methods -- #
     def config(self, show_circumference=None, show_radius=None,
                c_stroke=None, r_stroke=None):
         """
@@ -104,23 +105,6 @@ class Circle:
         if r_stroke is not None:
             self.r_stroke = r_stroke
 
-    def set_origin(self, origin):
-        self.origin = origin
-
-    def set_t(self, t):
-        """
-        Updates t value and equation result
-        :param t: float 0 <= t <= 1
-        """
-        if 0 <= t <= 1:
-            # Update t
-            self.t = t
-
-            # This is done to avoid multiple method calls
-            self.e_result = self.equation()
-        else:
-            raise ValueError('t must be between 0 and 1 (inclusive)')
-
     def equation(self):
         """
         0 <= t <= 1
@@ -128,24 +112,6 @@ class Circle:
         :return: complex number
         """
         return self.origin + (self.constant * math.e ** (self.pos * 2 * math.pi * 1j * self.t))
-
-    def get_radian(self):
-        """
-        Gets the radian from the current t value
-        """
-        point = self.e_result
-
-        rad = math.acos((point.real - self.origin.real) / self.radius)
-
-        return rad
-
-    def pygame_coords(self, complex_num):
-        """
-        Turns complex number into coords that can be used in pygame
-        """
-        x, y = complex_num.real * self.unit, complex_num.imag * self.unit
-
-        return xy(x, y)
 
     def update(self, t, new_origin=None):
         """
@@ -171,6 +137,55 @@ class Circle:
 
         if self.attached_object is not None:
             self.attached_object.update(t, self.e_result)
+
+    # -- Get & Set methods -- #
+
+    def attach(self, obj):
+        """
+        Attaches an object to the end of the radius
+        """
+        if "update" not in dir(obj):
+            raise Exception('Object must have a .update() method')
+
+        else:
+            self.attached_object = obj
+
+    def set_origin(self, origin):
+        self.origin = origin
+
+    def set_t(self, t):
+        """
+        Updates t value and equation result
+        :param t: float 0 <= t <= 1
+        """
+        if 0 <= t <= 1:
+            # Update t
+            self.t = t
+
+            # This is done to avoid multiple method calls
+            self.e_result = self.equation()
+        else:
+            raise ValueError('t must be between 0 and 1 (inclusive)')
+
+    def get_radian(self):
+        """
+        Gets the radian from the current t value
+        """
+        point = self.e_result
+
+        rad = math.acos((point.real - self.origin.real) / self.radius)
+
+        return rad
+
+    # -- PyGame oriented methods -- #
+
+    def pygame_coords(self, complex_num):
+        """
+        Turns complex number into coords that can be used in pygame
+        """
+        x, y = complex_num.real * self.unit, complex_num.imag * self.unit
+
+        return xy(x, y)
 
     def draw_radius(self):
         """
