@@ -162,7 +162,7 @@ class Circle:
 
         # Draw radius
         if self.show_radius:
-            self.draw_circumference()
+            self.draw_radius()
 
         if self.attached_object is not None:
             self.attached_object.update(t, self.e_result)
@@ -173,38 +173,36 @@ class Circle:
         origin coordinates.
         """
         # Get coordinates at circumference
-        if self.show_radius:
-            pt = self.e_result
+        pt = self.e_result
 
-            pygame.draw.line(self.screen,
-                             self.radius_color,
-                             self.pygame_coords(self.origin),
-                             self.pygame_coords(pt),
-                             width=self.r_stroke)
+        pygame.draw.line(self.screen,
+                         self.radius_color,
+                         self.pygame_coords(self.origin),
+                         self.pygame_coords(pt),
+                         width=self.r_stroke)
 
     def draw_circumference(self):
         """
         Draws the circumference of the circle around the origin
         """
-        if self.show_circumference:
-            # Same width and height. i.e. perfect circle.
-            height = width = self.radius * 2 * self.unit
+        # Same width and height. i.e. perfect circle.
+        height = width = self.radius * 2 * self.unit
 
-            # -- Create a rectangle object for the circle.
+        # -- Create a rectangle object for the circle.
 
-            x, y = self.pygame_coords(self.origin)
+        x, y = self.pygame_coords(self.origin)
 
-            # Shift the rect so the center of the circle is at given coordinates
-            x = x - width / 2
-            y = y - height / 2
+        # Shift the rect so the center of the circle is at given coordinates
+        x = x - width / 2
+        y = y - height / 2
 
-            # Create the rectangle object
-            rect = pygame.Rect((x, y), (width, height))
+        # Create the rectangle object
+        rect = pygame.Rect((x, y), (width, height))
 
-            # -- Draw the circle
-            pygame.draw.arc(self.screen,
-                            self.circle_color,
-                            rect, 0, 2 * math.pi, width=self.c_stroke)
+        # -- Draw the circle
+        pygame.draw.arc(self.screen,
+                        self.circle_color,
+                        rect, 0, 2 * math.pi, width=self.c_stroke)
 
 
 class OldCircle:
