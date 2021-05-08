@@ -10,7 +10,7 @@ import math
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = 1  # px
+    unit = 10  # px
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
@@ -111,7 +111,7 @@ class Circle:
         self.constant * e^(self.pos * 2 * π * 1j * t)
         :return: complex number
         """
-        return self.origin + (self.constant * math.e ** (self.pos * 2 * math.pi * 1j * self.t))
+        return self.origin + (self.constant * pow(math.e, (self.pos * 2 * math.pi * 1j * self.t)))
 
     def update(self, t, new_origin=None):
         """
@@ -375,7 +375,7 @@ def screen_size():
 def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_color=(0, 255, 0)):
     # Read the consts from file
     with open(filename, 'r') as file:
-        constants_str = file.readline()
+        constants_str = file.readline().replace('\n', '')
 
     # Turn into list
     constants_ls = constants_str.split(';')
@@ -419,7 +419,7 @@ def main():
 
     # TODO: Generate circle series
 
-    circle = create_circles(screen, "constants")
+    #circle = create_circles(screen, "constants")
 
     #    test = Circle(screen, 1+0j, -1)
 
@@ -431,8 +431,10 @@ def main():
 
     #test.attach(test2)
 
+    circle = Circle(screen, 1+0j, 1)
+
     # This value will increase by increment each loop
-    increment = 0.0001
+    increment = 0.01
     t = 0
     while 1:
         for event in pygame.event.get():
@@ -458,6 +460,11 @@ def main():
                          color['light_gray'],
                          xy(0, height/2),
                          xy(0, -height/2))
+
+        # pygame.draw.line(screen,
+        #                  color['light_gray'],
+        #                  xy(20, height / 2),
+        #                  xy(20, -height / 2))
 
         # Circles
         # circle.update(increment)
