@@ -17,7 +17,8 @@ class Circle:
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
-                 show_circumference=True, show_radius=True, stroke=1):
+                 show_circumference=True, show_radius=True,
+                 c_stroke=1, r_stroke=1):
         """
         Generate a circle based on c * e^(n * 2 * π * 1j * t)
         :param screen: Pygame screen
@@ -27,7 +28,8 @@ class Circle:
         :param radius_color: rgb value of radius
         :param show_circumference: Boolean for drawing circumference
         :param show_radius: Boolean for drawing radius
-        :param stroke: Stroke size for drawing
+        :param c_stroke: Stroke size for the circumference
+        :param r_stroke: Stroke size for the radius
         """
         self.screen = screen
         self.constant = constant
@@ -38,7 +40,8 @@ class Circle:
         self.radius_color = radius_color
         self.show_circumference = show_circumference
         self.show_radius = show_radius
-        self.stroke = stroke
+        self.c_stroke = c_stroke
+        self.r_stroke = r_stroke
 
         self.t = 0
         self.radius = self.constant.real
@@ -72,17 +75,26 @@ class Circle:
         # and radius point (equation + parent). Then send the radius
         # point to its own child
 
-    def config(self, show_circumference=None, show_radius=None):
+    def config(self, show_circumference=None, show_radius=None,
+               c_stroke=None, r_stroke=None):
         """
         Change visibility settings during runtime
         :param show_circumference: Bool
         :param show_radius: Bool
+        :param r_stroke: int
+        :param c_stroke: int
         """
         if show_circumference is not None:
             self.show_circumference = show_circumference
 
         if show_radius is not None:
             self.show_radius = show_radius
+
+        if c_stroke is not None:
+            self.c_stroke = c_stroke
+
+        if r_stroke is not None:
+            self.r_stroke = r_stroke
 
     def set_origin(self, origin):
         self.origin = origin
@@ -112,18 +124,54 @@ class Circle:
 
         return rad
 
+    def pygame_coords(self, complex_num):
+        """
+        Turns complex number into coords that can be used in pygame
+        """
+        x, y = complex_num.real * self.unit, complex_num.imag * self.unit
+
+        return xy(x, y)
+
     def draw_radius(self):
         """
-        Draws the radius of a circle based on the radian given and the
-        original coordinates.
+        Draws the radius of a circle based on the equation and the
+        origin coordinates.
         """
         # Get coordinates at circumference
-        pt = self.equation()
+        if self.show_radius:
+            pt = self.equation()
 
-        pygame.draw.line(self.screen,
-                         self.radius_color,
-                         xy(*i_xy(self.origin)),
-                         xy(*i_xy(pt)))
+            pygame.draw.line(self.screen,
+                             self.radius_color,
+                             self.pygame_coords(self.origin),
+                             self.pygame_coords(pt),
+                             width=self.r_stroke)
+
+    def draw_circumference(self):
+        """
+        Draws the circumference of the circle around the origin
+        """
+        if self.show_circumference:
+            # Same width and height. i.e. perfect circle.
+            height = width = self.radius * 2
+
+            # -- Create a rectangle object for the circle.
+            # Shift the rect so the center of the circle is at given coordinates
+
+            x, y = self.pygame_coords(self.origin)
+
+            # PYGAME COORDS. Start from top left.
+            x = x - width / 2
+            y = y + height / 2
+
+            # Create the rectangle object
+            rect = pygame.Rect((x, y), (width, height))
+
+            # -- Draw the circle
+            pygame.draw.arc(self.screen,
+                            self.circle_color,
+                            rect, 0, 2 * math.pi, width=self.c_stroke)
+
 
 class OldCircle:
     def __init__(self, screen, coords, radius, const, radian,
@@ -433,7 +481,7 @@ def create_circles(root_circle_parameters, circle_parameters,
     # Start initial object
     # This is done so we are able to replace the
     # coordinates for the next objects
-    objects = [Circle(*root_circle_parameters)]
+    objects = [OldCircle(*root_circle_parameters)]
 
     for i in range(len(circle_parameters)):
         parameter = circle_parameters[i]
@@ -441,7 +489,7 @@ def create_circles(root_circle_parameters, circle_parameters,
         # Replace previous coordinates for the ones of the previous object
         parameter[1] = objects[i - 1].coords_at_circumference()
 
-        objects.append(Circle(*parameter))
+        objects.append(OldCircle(*parameter))
 
     # Start attaching the objects from the end to the start
     objects.reverse()
@@ -487,6 +535,10 @@ def main():
 
     increment = 2*math.pi / 220
 
+    test = Circle(screen, 1+1j, 1)
+
+    test.set_t(0.2)
+
     # dp = 5
     # dots = []
     # first = None
@@ -512,9 +564,10 @@ def main():
                          xy(0, -height/2))
 
         # Circles
-        circle.update(increment)
+        #circle.update(increment)
 
         # --
+        test.draw_circumference()
 
         pygame.display.flip()
         clock.tick(60)
