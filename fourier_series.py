@@ -151,17 +151,17 @@ class Circle:
         """
         if self.show_circumference:
             # Same width and height. i.e. perfect circle.
-            height = width = self.radius * 2
+            height = width = self.radius * 2 * self.unit
 
-            # All good up to here
             # -- Create a rectangle object for the circle.
             # Shift the rect so the center of the circle is at given coordinates
 
             x, y = self.pygame_coords(self.origin)
 
+            # Good up to here
             # PYGAME COORDS. Start from top left.
             x = x - width / 2
-            y = y + height / 2
+            y = y - height / 2
 
             # Create the rectangle object
             rect = pygame.Rect((x, y), (width, height))
