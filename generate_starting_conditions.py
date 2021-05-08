@@ -44,7 +44,7 @@ def integral(pts, n):
     for i in range(0, len(pts)):
         t += 1
         nums.append(
-            sum(pts[:i + 1])/len(pts[:i + 1]) * pow(math.e, -n * 2 * math.pi * 1j * t)
+            pts[i] * pow(math.e, -n * 2 * math.pi * 1j * t)
         )
     c = sum(nums) / len(nums)
     return c
