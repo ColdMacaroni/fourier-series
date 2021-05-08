@@ -2,7 +2,6 @@
 # This script will take an svg file and output its path in a format
 # that draw_bezier can read.
 
-from sys import argv
 import bs4 as bs
 
 
@@ -19,13 +18,9 @@ def get_d(filename):
     return ctrl_points
 
 
-def get_nums():
-    if len(argv) == 1:
-        text = input("Paste the contents inside of the d attribute of path: ")
-
-    else:
-        # Read the contents of the file
-        text = get_d(argv[1])
+def get_nums(filename):
+    # Read the contents of the file
+    text = get_d(filename)
 
     values = text.split()
 
@@ -113,8 +108,8 @@ def convert_to_absolute(first, points):
     return coords
 
 
-def main():
-    txt_list = get_nums()
+def main(filename):
+    txt_list = get_nums(filename)
     coord_list = svg_str_to_tuple(txt_list)
 
     if not len(coord_list) - 1 % 3:
@@ -129,6 +124,7 @@ def main():
     bezier_coords = convert_to_absolute(first_coord, extra_coords)
 
     return bezier_coords
+
 
 if __name__ == "__main__":
     print(main())
