@@ -11,7 +11,15 @@ from sys import argv
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = int(argv[1])  # px
+    try:
+        unit = float(argv[1])  # px
+
+    except ValueError:
+        unit = float(input("Enter the value of 1 unit in pixels. "
+                           "Number can be a float: "))
+
+    except IndexError:
+        unit = float(input("Enter the value of 1 unit in pixels: "))
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),

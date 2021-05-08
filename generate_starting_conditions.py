@@ -25,30 +25,8 @@ def cubic_bezier(arg_points, t):
     return tuple(coords)
 
 
-def generate_points(control_points):
+def generate_points(control_points, increment):
     _points = []
-
-    try:
-        # Try to read the increment from args
-        increment = abs(float(argv[4])) ** -1
-
-    # Sorry for weird formatting, pep8
-    except IndexError:
-        increment = abs(
-            float(
-                input("Enter the resolution. "
-                      "A higher number is better, but slower: ").strip()
-            )
-        ) ** -1
-
-    except ValueError:
-        increment = abs(
-            float(
-                input("Enter the resolution. "
-                      "A higher number is better, but slower. "
-                      "It should be a positive number: ").strip()
-            )
-        ) ** -1
 
     t = -increment
     while t <= 1:
@@ -99,16 +77,37 @@ def coords_to_complex(coords):
 try:
     filename = argv[1]
 except IndexError:
-    filename = input("Filename of svg file")
+    filename = input("Filename of svg file: ")
 
 cps = svg_to_readable.main(filename)
 
+try:
+    # Try to read the increment from args
+    resolution = abs(float(argv[4])) ** -1
+
+# Sorry for weird formatting, pep8
+except IndexError:
+    resolution = abs(
+        float(
+            input("Enter the resolution. "
+                  "A higher number is better, but slower: ").strip()
+        )
+    ) ** -1
+
+except ValueError:
+    resolution = abs(
+        float(
+            input("Enter the resolution. "
+                  "A higher number is better, but slower. "
+                  "It should be a positive number: ").strip()
+        )
+    ) ** -1
 
 # This will sequentially create all points.
 # They'll be one after the other
 raw_points = []
 for cp in cps:
-    raw_points += generate_points(cp)
+    raw_points += generate_points(cp, resolution)
 
 # NOTE: This will be removed once normalizing values is implemented
 # The size handling and all that should be done form the
