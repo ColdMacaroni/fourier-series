@@ -10,7 +10,7 @@ import math
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = 10  # px
+    unit = 1  # px
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
@@ -227,7 +227,8 @@ class Circle:
 
 class DrawDots:
     def __init__(self, screen, dot_color, line_color,
-                 precision=2, dots=None, dot_size=1):
+                 precision=2, dots=None, dot_size=1,
+                 show_dot=True, show_line=False):
         """
         :param screen: Pygame screen
         :param dot_color: Color for each dot
@@ -245,6 +246,8 @@ class DrawDots:
         self.precision = precision
         self.dots = dots
         self.dot_size = dot_size
+        self.show_dot = show_dot
+        self.show_line = show_line
 
         if self.dots is None:
             self.dots = []
@@ -299,8 +302,11 @@ class DrawDots:
 
         else:
             for dot in range(len(self.dots)):
-                self.draw_line(self.dots[dot-1], self.dots[dot])
-                self.draw_dot(self.dots[dot])
+                if self.show_line:
+                    self.draw_line(self.dots[dot-1], self.dots[dot])
+
+                if self.show_dot:
+                    self.draw_dot(self.dots[dot])
 
 
 def i_xy(num):
@@ -419,7 +425,7 @@ def main():
 
     # TODO: Generate circle series
 
-    #circle = create_circles(screen, "constants")
+    circle = create_circles(screen, "constants")
 
     #    test = Circle(screen, 1+0j, -1)
 
@@ -431,10 +437,10 @@ def main():
 
     #test.attach(test2)
 
-    circle = Circle(screen, 1+0j, 1)
+    # circle = Circle(screen, 1+0j, 1)
 
     # This value will increase by increment each loop
-    increment = 0.01
+    increment = 0.001
     t = 0
     while 1:
         for event in pygame.event.get():
@@ -475,7 +481,7 @@ def main():
         t += increment
 
         pygame.display.flip()
-        clock.tick(6)
+        clock.tick(60)
 
 
 if __name__ == "__main__":

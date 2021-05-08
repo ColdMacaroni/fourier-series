@@ -42,7 +42,7 @@ def integral(pts, n):
 
     nums = []
     for i in range(0, len(pts)):
-        t += 1
+        t += inc
         nums.append(
             pts[i] * pow(math.e, -n * 2 * math.pi * 1j * t)
         )
