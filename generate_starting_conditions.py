@@ -24,7 +24,7 @@ def cubic_bezier(p0, p1, p2, p3, t):
 def generate_points(control_points):
     _points = []
 
-    increment = 0.1
+    increment = 0.05
     t = -increment
     while t <= 1:
         points.append(cubic_bezier(*control_points, t))
@@ -44,9 +44,9 @@ def integral(pts, n):
     for i in range(0, len(pts)):
         t += 1
         nums.append(
-            pts[i] * pow(math.e, -n * 2 * math.pi * 1j * t)
+            sum(pts[:i + 1])/len(pts[:i + 1]) * pow(math.e, -n * 2 * math.pi * 1j * t)
         )
-    c = sum(nums)
+    c = sum(nums) / len(nums)
     return c
 
 
@@ -84,6 +84,8 @@ for cp in cps:
     points += generate_points(cp)
 
 points = [coords_to_complex(x) for x in points]
+
+
 
 # Now we have the points in order and in imaginary plane
 constants = []
