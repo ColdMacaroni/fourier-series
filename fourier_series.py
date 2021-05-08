@@ -277,8 +277,6 @@ class DrawDots:
         # This variable is not useful
         del t
 
-        print('Boop')
-
         coords = complex.real * Circle.unit, complex.imag * Circle.unit
         new_coords = xy(*coords)
 
