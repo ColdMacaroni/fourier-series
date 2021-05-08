@@ -270,12 +270,17 @@ class DrawDots:
                        round(dot[1], self.precision))
         return rounded_dot
 
-    def update(self, increment, new_coords):
+    def update(self, t, complex):
         """
         Adds the given dot to the objects list of dots and draws them
         """
         # This variable is not useful
-        del increment
+        del t
+
+        print('Boop')
+
+        coords = complex.real * Circle.unit, complex.imag * Circle.unit
+        new_coords = xy(*coords)
 
         self.append_dot(new_coords)
         self.graph()
@@ -395,32 +400,21 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    # Generate circle series
-    circle = create_circles([screen, xy(0, 0), 50, 0.1, 2], [
-        [screen, None, 35, -1, 0],
-        [screen, None, 10, 2, 0.5],
-        [screen, None, 15, -3, math.pi],
-    ], [screen, color['blue'], color['green']])
-
-    # Increment is how much the radian will change per time unit
-    # At an increment of 2*math.pi/120, the radian will go through a
-    # full rotation after 120 time units. (2s if running at 60fps)
-
-    increment = 2*math.pi / 220
+    # TODO: Generate circle series
 
     test = Circle(screen, 1+0j, -1)
 
-    test2 = Circle(screen, 1+0j, 1)
+    test2 = Circle(screen, 1+0j, 2)
+
+    dot = DrawDots(screen, color['blue'], color['green'])
+
+    test2.attach(dot)
 
     test.attach(test2)
 
     # This value will increase by increment each loop
     increment = 0.01
     t = 0
-
-    # dp = 5
-    # dots = []
-    # first = None
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
