@@ -20,7 +20,7 @@ def coords_to_complex(coords):
 
 # The average of the points
 # See https://github.com/ColdMacaroni/pygame-bezier
-avg_pt = (-13.399837757, 25.824553376666657)
+avg_pt = (0.5593747196325674, 0.5946344182531562)
 
 # Calculate the value c0
 static = coords_to_complex(avg_pt)
