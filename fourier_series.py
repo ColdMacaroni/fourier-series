@@ -7,7 +7,10 @@
 import pygame
 import math
 
+# TODO: When time comes to draw the circles. The values will be somewhere around 0 and 1. Multiple those by some
+#  unit. e.g. unit=50px
 
+# TODO: Create method for the equation.
 class Circle:
     def __init__(self, screen, coords, radius, const, radian,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
@@ -35,6 +38,18 @@ class Circle:
         :param stroke: Stroke used for the circle and the radius.
                default=1
         """
+
+        # Circles will need the following parameters
+        # n
+        # c
+        # Starting coords
+        # They will need a method to get the result of the equation
+        # from a given t
+
+        # Attach method and such will still work.
+        # Radians and all that would be kinda useless
+
+        # c.real = radius
 
         # NOTE: The formula for the circle is
         # c * e^(n * 2 * π * 1j * t)
@@ -296,6 +311,8 @@ def screen_size():
 
 def create_circles(root_circle_parameters, circle_parameters,
                    dotdraw_parameters=None, draw=True):
+
+    # TODO: Turn this into  a for loop. e.g. range(-2, 5). Will take a list of constants (c) and will use the i for (n)
     # Start initial object
     # This is done so we are able to replace the
     # coordinates for the next objects
