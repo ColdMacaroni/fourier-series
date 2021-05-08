@@ -2,6 +2,7 @@
 
 ##
 # fourier_series.py
+# Create circles from complex numbers
 # coords = coordinates
 import pygame
 import math
