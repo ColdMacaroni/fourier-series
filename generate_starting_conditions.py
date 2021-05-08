@@ -44,9 +44,9 @@ def integral(pts, n):
     for pt in pts:
         t += inc
         new_pts.append(
-            pt * pow(math.e, -n * 2 * math.pi * 1j * t)
+            pt * pow(math.e, n * -1 * 2 * math.pi * 1j * t)
         )
-    c = sum(new_pts)
+    c = sum(new_pts)/len(new_pts)
     return c
 
 

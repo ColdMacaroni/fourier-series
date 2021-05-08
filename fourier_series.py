@@ -10,7 +10,7 @@ import math
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = 1  # px
+    unit = 5  # px
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
@@ -392,12 +392,19 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
     # Convert to numbers
     constants = [complex(x) for x in constants_ls]
 
-    start = int((len(constants) - 1) / 2)
+    actual_nums = int((len(constants) - 1) / 2)
+
+    nums = []
+    for i in range(0, actual_nums + 1):
+        nums.append(0)
+
+        if i != 0:
+            nums.append(i * -1)
 
     # Start making objects
     circles = []
     for const in range(0, len(constants)):
-        circles.append(Circle(screen, constants[const], start + const))
+        circles.append(Circle(screen, constants[const], nums[const], show_circumference=False))
 
     # Reverse the list for attaching
     circles.reverse()
@@ -481,7 +488,7 @@ def main():
         t += increment
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(120)
 
 
 if __name__ == "__main__":
