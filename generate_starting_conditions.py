@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # Generate starting sequences for fourier series
 import math
-from sys import argv
-import svg_to_readable
 
 
 def cubic_bezier(p0, p1, p2, p3, t):
@@ -26,21 +24,10 @@ def cubic_bezier(p0, p1, p2, p3, t):
 def generate_points(control_points):
     _points = []
 
-    try:
-        increment = abs(float(argv[4]))
-
-    except IndexError:
-        print('Argument 4 should be the resolution for the bezier curve. '+
-              'The closer to 0 the better.')
-        exit(0)
-
-    except ValueError:
-        print('Argument 4 must be a float')
-        exit(0)
-
+    increment = 0.05
     t = -increment
     while t <= 1:
-        _points.append(cubic_bezier(*control_points, t))
+        points.append(cubic_bezier(*control_points, t))
 
         t += increment
 
@@ -64,7 +51,7 @@ def integral(pts, n):
 
 
 def write_complex(num):
-    with open(filename, 'a') as file:
+    with open('constants', 'a') as file:
         if num.imag < 0:
             line = "{}{}j".format(num.real, num.imag)
         else:
@@ -77,50 +64,32 @@ def coords_to_complex(coords):
     num = coords[0] + coords[1] * 1j
     return num
 
-
-try:
-    cps = svg_to_readable.main(argv[1])
-except IndexError:
-    print('Argument 1 should be an svg file')
-    exit(0)
-
+cps = [[(0, 0), (4.68822, -9.06797), (-2.60655, -10.18185), (-0.86152, -14.39585)],
+       [(-0.86152, -14.39585), (0.8835100000000001, -18.609859999999998), (8.46781, -15.32504), (10.4117, -25.99175)],
+       [(10.4117, -25.99175), (11.38365, -31.32511), (-1.7129100000000008, -33.283), (-6.197120000000002, -33.69267)],
+       [(-6.197120000000002, -33.69267), (-8.024570000000002, -33.72337), (-1.3975600000000021, -41.27619), (-3.4131400000000016, -41.8501)],
+       [(-3.4131400000000016, -41.8501), (-5.391580000000001, -42.413439999999994), (-8.796000000000001, -33.98813), (-9.790690000000001, -34.42445)],
+       [(-9.790690000000001, -34.42445), (-11.541890000000002, -35.19261), (-8.633310000000002, -44.75384), (-11.418510000000001, -44.5681)],
+       [(-11.418510000000001, -44.5681), (-14.203710000000001, -44.38237), (-10.0447, -34.64056), (-13.802760000000001, -35.66668)],
+       [(-13.802760000000001, -35.66668), (-17.07917, -36.53915), (-21.80949, -48.9543), (-31.314968, -44.86435)],
+       [(-31.314968, -44.86435), (-40.820442, -40.77441), (-30.980815, -26.08339), (-33.413413, -22.514460000000003)],
+       [(-33.413413, -22.514460000000003), (-35.846016, -18.945530000000005), (-46.755883999999995, -19.800270000000005), (-42.848062, -7.631140000000004)],
+       [(-42.848062, -7.631140000000004), (-38.940239999999996, 4.537989999999995), (-22.777549999999998, -8.283880000000003), (-18.48756, -5.400100000000004)],
+       [(-18.48756, -5.400100000000004), (-14.197569999999999, -2.516320000000004), (-5.773999999999999, 9.133679999999996), (0.0, 2.9999999996199733e-05)]]
 
 # This will sequentially create all points.
 # They'll be one after the other
-raw_points = []
+points = []
 for cp in cps:
-    raw_points += generate_points(cp)
-
-# Scale the svg
-try:
-    factor = float(argv[3])
-except IndexError:
-    print('Argument 3 should be the scaling factor for the points')
-    exit(0)
-
-except ValueError:
-    print('Argument 3 must be a float')
-    exit(0)
-
-points = [(y[0] * factor, y[1] * -factor) for y in raw_points]
-
-points = raw_points
+    points += generate_points(cp)
 
 points = [coords_to_complex(x) for x in points]
 
+
+
 # Now we have the points in order and in imaginary plane
 constants = []
-try:
-    numbers = int(argv[2])
-
-except IndexError:
-    print('Argument 2 should be half the amount of circles')
-    exit(0)
-
-except ValueError:
-    print('Argument 2 must be an int')
-    exit(0)
-
+numbers = 50
 for n in range(0, numbers + 1):
     constants.append(integral(points, n))
 
@@ -145,12 +114,7 @@ for n in range(0, numbers + 1):
 # for n in range(0, amount + 1):
 #     const = static * pow(math.e, (n * -1) * 2 * math.pi * 1j)
 #     constants.append(const)
-
-# Clear file
-filename = 'constants'
-with open(filename, 'w') as file:
-    file.write('')
-
+#
 for i in range(len(constants)):
     print(i, constants[i])
     write_complex(constants[i])
