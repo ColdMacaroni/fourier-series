@@ -123,22 +123,33 @@ except ValueError:
     print("Make sure the factor is a float. E.g. 0.7")
     factor = input("Scale factor: ")
 
-# Flip y axis, svgs are upside down for osme reason
-points = [(y[0] * factor, y[1] * -factor) for y in raw_points]
+# Flip y axis, svgs are upside down for some reason
+points = [(coord[0] * factor, coord[1] * -factor) for coord in raw_points]
 
 # -- Move points to 0, 0 -- #
+target = (0, 0)
 
 # Split list into x and y
+x_points = [x[0] for x in points]
+y_points = [y[1] for y in points]
 
 # Get average
+x_avg = sum(x_points) / len(x_points)
+y_avg = sum(y_points) / len(y_points)
 
 # Find diff from 0,0
+x_diff = target[0] - x_avg
+y_diff = target[1] - y_avg
+
+new_x = [coord + x_diff for coord in x_points]
 
 # Apply that diff to all points
 
 # profit
 
 # --
+
+exit()
 
 points = [coords_to_complex(x) for x in points]
 
