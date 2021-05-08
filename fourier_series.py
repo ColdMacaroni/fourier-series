@@ -10,7 +10,7 @@ import math
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = 50  # px
+    unit = 25  # px
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
@@ -589,7 +589,11 @@ def main():
 
     increment = 2*math.pi / 220
 
-    test = Circle(screen, 1+1j, 1)
+    test = Circle(screen, 1+0j, -1)
+
+    test2 = Circle(screen, 1+0j, 1)
+
+    test.attach(test2)
 
     # This value will increase by increment each loop
     increment = 0.01
