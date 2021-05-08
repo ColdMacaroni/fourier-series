@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # Generate starting sequences for fourier series
 import math
-
+from sys import argv
+import svg_to_readable
 
 def cubic_bezier(p0, p1, p2, p3, t):
     """
@@ -64,7 +65,8 @@ def coords_to_complex(coords):
     num = coords[0] + coords[1] * 1j
     return num
 
-cps = 
+
+cps = svg_to_readable.main(argv[1])
 
 # This will sequentially create all points.
 # They'll be one after the other
