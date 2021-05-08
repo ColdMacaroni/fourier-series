@@ -28,7 +28,7 @@ static = coords_to_complex(avg_pt)
 constants = []
 
 # Amount of circles
-amount = 10
+amount = 400
 for n in range(0, amount + 1):
     const = static * pow(math.e, (n * -1) * 2 * math.pi * 1j)
     constants.append(const)
