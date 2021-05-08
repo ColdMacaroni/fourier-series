@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 # Generate starting sequences for fourier series
 import math
+from sys import argv
+import svg_to_readable
 
 
-def cubic_bezier(p0, p1, p2, p3, t):
+def cubic_bezier(arg_points, t):
     """
     Returns the point
     """
     coords = []
-    # twice for x and then y
+    p0, p1, p2, p3 = arg_points
+    # for x and then y
     for i in [0, 1]:
+        # Equation from
         # https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves
         num = (((1 - t)**3) * p0[i])\
              + (3 * t * ((1 - t)**2) * p1[i])\
@@ -24,10 +28,31 @@ def cubic_bezier(p0, p1, p2, p3, t):
 def generate_points(control_points):
     _points = []
 
-    increment = 0.05
+    try:
+        # Try to read the increment from args
+        increment = abs(float(argv[4])) ** -1
+
+    # Sorry for weird formatting, pep8
+    except IndexError:
+        increment = abs(
+            float(
+                input("Enter the resolution. "
+                      "A higher number is better, but slower: ").strip()
+            )
+        ) ** -1
+
+    except ValueError:
+        increment = abs(
+            float(
+                input("Enter the resolution. "
+                      "A higher number is better, but slower. "
+                      "It should be a positive number: ").strip()
+            )
+        ) ** -1
+
     t = -increment
     while t <= 1:
-        points.append(cubic_bezier(*control_points, t))
+        _points.append(cubic_bezier(control_points, t))
 
         t += increment
 
@@ -41,17 +66,22 @@ def integral(pts, n):
 
     # To make first val 0
     t = -inc
+
+    # Multiply the formula for every circle we want the constant for
+    # with each value of pts
     for pt in pts:
         t += inc
         new_pts.append(
             pt * pow(math.e, n * -1 * 2 * math.pi * 1j * t)
         )
+
+    # To get the average we dont divide because its from values 0 to 1. x/1 = x
     c = sum(new_pts)
     return c
 
 
 def write_complex(num):
-    with open('constants', 'a') as file:
+    with open(filename, 'a') as file:
         if num.imag < 0:
             line = "{}{}j".format(num.real, num.imag)
         else:
@@ -64,32 +94,52 @@ def coords_to_complex(coords):
     num = coords[0] + coords[1] * 1j
     return num
 
-cps = [[(0, 0), (4.68822, -9.06797), (-2.60655, -10.18185), (-0.86152, -14.39585)],
-       [(-0.86152, -14.39585), (0.8835100000000001, -18.609859999999998), (8.46781, -15.32504), (10.4117, -25.99175)],
-       [(10.4117, -25.99175), (11.38365, -31.32511), (-1.7129100000000008, -33.283), (-6.197120000000002, -33.69267)],
-       [(-6.197120000000002, -33.69267), (-8.024570000000002, -33.72337), (-1.3975600000000021, -41.27619), (-3.4131400000000016, -41.8501)],
-       [(-3.4131400000000016, -41.8501), (-5.391580000000001, -42.413439999999994), (-8.796000000000001, -33.98813), (-9.790690000000001, -34.42445)],
-       [(-9.790690000000001, -34.42445), (-11.541890000000002, -35.19261), (-8.633310000000002, -44.75384), (-11.418510000000001, -44.5681)],
-       [(-11.418510000000001, -44.5681), (-14.203710000000001, -44.38237), (-10.0447, -34.64056), (-13.802760000000001, -35.66668)],
-       [(-13.802760000000001, -35.66668), (-17.07917, -36.53915), (-21.80949, -48.9543), (-31.314968, -44.86435)],
-       [(-31.314968, -44.86435), (-40.820442, -40.77441), (-30.980815, -26.08339), (-33.413413, -22.514460000000003)],
-       [(-33.413413, -22.514460000000003), (-35.846016, -18.945530000000005), (-46.755883999999995, -19.800270000000005), (-42.848062, -7.631140000000004)],
-       [(-42.848062, -7.631140000000004), (-38.940239999999996, 4.537989999999995), (-22.777549999999998, -8.283880000000003), (-18.48756, -5.400100000000004)],
-       [(-18.48756, -5.400100000000004), (-14.197569999999999, -2.516320000000004), (-5.773999999999999, 9.133679999999996), (0.0, 2.9999999996199733e-05)]]
+# TODO: Normalize values
+
+try:
+    filename = argv[1]
+except IndexError:
+    filename = input("Filename of svg file")
+
+cps = svg_to_readable.main(argv[1])
+
 
 # This will sequentially create all points.
 # They'll be one after the other
-points = []
+raw_points = []
 for cp in cps:
-    points += generate_points(cp)
+    raw_points += generate_points(cp)
+
+# Scale the svg
+try:
+    factor = float(argv[3])
+except IndexError:
+    print('Argument 3 should be the scaling factor for the points')
+    exit(0)
+
+except ValueError:
+    print('Argument 3 must be a float')
+    exit(0)
+
+points = [(y[0] * factor, y[1] * -factor) for y in raw_points]
+
+points = raw_points
 
 points = [coords_to_complex(x) for x in points]
 
-
-
 # Now we have the points in order and in imaginary plane
 constants = []
-numbers = 50
+try:
+    numbers = int(argv[2])
+
+except IndexError:
+    print('Argument 2 should be half the amount of circles')
+    exit(0)
+
+except ValueError:
+    print('Argument 2 must be an int')
+    exit(0)
+
 for n in range(0, numbers + 1):
     constants.append(integral(points, n))
 
@@ -114,7 +164,12 @@ for n in range(0, numbers + 1):
 # for n in range(0, amount + 1):
 #     const = static * pow(math.e, (n * -1) * 2 * math.pi * 1j)
 #     constants.append(const)
-#
+
+# Clear file
+filename = 'constants'
+with open(filename, 'w') as file:
+    file.write('')
+
 for i in range(len(constants)):
     print(i, constants[i])
     write_complex(constants[i])
