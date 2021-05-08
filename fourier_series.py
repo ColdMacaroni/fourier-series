@@ -5,12 +5,13 @@
 
 import pygame
 import math
+from sys import argv
 
 
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = 5  # px
+    unit = int(argv[1])  # px
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
@@ -400,6 +401,8 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
 
         if i != 0:
             nums.append(i * -1)
+
+    print(len(constants))
 
     # Start making objects
     circles = []
