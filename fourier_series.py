@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-
-##
 # fourier_series.py
 # Create circles from complex numbers
 # coords = coordinates
