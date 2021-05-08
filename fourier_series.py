@@ -41,12 +41,19 @@ class Circle:
         self.c_stroke = c_stroke
         self.r_stroke = r_stroke
 
-        # Values that'll change
+        # -- Values that'll change but still need a pre-set
+        # Math
         self.t = 0
-        self.radius = self.constant.real
         self.origin = 0j
-        self.attached_object = None
         self.e_result = self.equation()
+
+        self.attached_object = None
+        # --
+
+        # Do some trig to ge the radius
+        self.radius = math.sqrt(pow(self.e_result.real - self.origin.real, 2)
+                                + pow(self.e_result.imag - self.origin.imag, 2))
+
         # NOTE: Centre of the circle is parent's equation result
 
         # Circles will need the following parameters
