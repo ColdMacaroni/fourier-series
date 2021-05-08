@@ -243,10 +243,13 @@ class DrawDots:
                 self.draw_dot(self.dots[dot])
 
 
-# TODO: Function to convert imaginary numbers to points in xy plane.
-# num = 6+7j
-# num.real = 6 = x
-# num.imag = 7 = y
+def i_xy(num=int):
+    """
+    turns an imaginary number to x, y coordinates
+    y=i
+    """
+    return num.real, num.imag
+
 
 def xy(x, y):
     """
