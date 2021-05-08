@@ -35,18 +35,18 @@ def generate_points(control_points):
 
 
 def integral(pts, n):
+    new_pts = []
+
     inc = 1 / len(pts)
 
     # To make first val 0
     t = -inc
-
-    nums = []
-    for i in range(0, len(pts)):
+    for pt in pts:
         t += inc
-        nums.append(
-            pts[i] * pow(math.e, -n * 2 * math.pi * 1j * t)
+        new_pts.append(
+            pt * pow(math.e, -n * 2 * math.pi * 1j * t)
         )
-    c = sum(nums) / len(nums)
+    c = sum(new_pts)
     return c
 
 
