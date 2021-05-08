@@ -10,7 +10,7 @@ import math
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = 25  # px
+    unit = 2  # px
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
@@ -372,39 +372,62 @@ def screen_size():
     return 600, 600
 
 
-def create_circles(screen, file):
-    # TODO: Turn this into  a for loop. e.g. range(-2, 5). Will take a list of constants (c) and will use the i for (n)
+def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_color=(0, 255, 0)):
+    # Read the consts from file
+    with open(filename, 'r') as file:
+        constants_str = file.readline()
 
-    return
+    # Turn into list
+    constants_ls = constants_str.split(';')
+
+    # Remove empty strings
+    constants_ls = list(filter(None, constants_ls))
+
+    # Convert to numbers
+    constants = [complex(x) for x in constants_ls]
+
+    # Start making objects
+    circles = []
+    for const in range(0, len(constants)):
+        circles.append(Circle(screen, constants[const], const))
+
+    # Reverse the list for attaching
+    circles.reverse()
+
+    # Attach a DrawDot object if requested
+    if draw:
+        circles[0].attach(DrawDots(screen, dot_color,line_color))
+
+    # Starting at one so i can attach the *previous* obj to
+    # the current one
+    for obj in range(1, len(circles)):
+        circles[obj].attach(circles[obj - 1])
+
+    # Return the static circle
+    return circles[-1]
+
 
 def main():
     pygame.init()
 
     size = width, height = screen_size()
 
-    color = {
-        'white': (255, 255, 255),
-        'black': (0, 0, 0),
-        'light_gray': (100, 100, 100),
-        'red': (255, 0, 0),
-        'green': (0, 255, 0),
-        'blue': (0, 0, 255)
-    }
-
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
     # TODO: Generate circle series
 
-    test = Circle(screen, 1+0j, -1)
+    circle = create_circles(screen, "constants")
 
-    test2 = Circle(screen, 1+0j, 2)
+    #    test = Circle(screen, 1+0j, -1)
 
-    dot = DrawDots(screen, color['blue'], color['green'])
+    #test2 = Circle(screen, 1+0j, 2)
 
-    test2.attach(dot)
+    #dot = DrawDots(screen, color['blue'], color['green'])
 
-    test.attach(test2)
+    #test2.attach(dot)
+
+    #test.attach(test2)
 
     # This value will increase by increment each loop
     increment = 0.01
@@ -438,7 +461,7 @@ def main():
         # circle.update(increment)
 
         # --
-        test.update(t)
+        circle.update(t)
 
         t += increment
 
@@ -447,4 +470,12 @@ def main():
 
 
 if __name__ == "__main__":
+    color = {
+        'white': (255, 255, 255),
+        'black': (0, 0, 0),
+        'light_gray': (100, 100, 100),
+        'red': (255, 0, 0),
+        'green': (0, 255, 0),
+        'blue': (0, 0, 255)
+    }
     main()
