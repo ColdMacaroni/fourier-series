@@ -402,11 +402,10 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
         if i != 0:
             nums.append(i * -1)
 
-    print(len(constants))
-
     # Start making objects
     circles = []
     for const in range(0, len(constants)):
+        print(constants[const])
         circles.append(Circle(screen, constants[const], nums[const], show_circumference=False))
 
     # Reverse the list for attaching
@@ -414,7 +413,7 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
 
     # Attach a DrawDot object if requested
     if draw:
-        circles[0].attach(DrawDots(screen, dot_color,line_color))
+        circles[0].attach(DrawDots(screen, dot_color, line_color))
 
     # Starting at one so i can attach the *previous* obj to
     # the current one

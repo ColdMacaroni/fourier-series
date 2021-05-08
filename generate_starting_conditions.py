@@ -104,6 +104,8 @@ except ValueError:
 
 points = [(y[0] * factor, y[1] * -factor) for y in raw_points]
 
+points = raw_points
+
 points = [coords_to_complex(x) for x in points]
 
 # Now we have the points in order and in imaginary plane
