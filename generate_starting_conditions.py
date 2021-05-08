@@ -34,6 +34,22 @@ def generate_points(control_points):
     return _points
 
 
+def integral(pts, n):
+    inc = 1 / len(pts)
+
+    # To make first val 0
+    t = -inc
+
+    nums = []
+    for i in range(0, len(pts)):
+        t += 1
+        nums.append(
+            pts[i] * pow(math.e, -n * 2 * math.pi * 1j * t)
+        )
+    c = sum(nums)
+    return c
+
+
 def write_complex(num):
     with open('constants', 'a') as file:
         if num.imag < 0:
@@ -68,7 +84,18 @@ for cp in cps:
     points += generate_points(cp)
 
 points = [coords_to_complex(x) for x in points]
-print(points)
+
+# Now we have the points in order and in imaginary plane
+constants = []
+numbers = 50
+for n in range(0, numbers + 1):
+    constants.append(integral(points, n))
+
+    if n != 0:
+        constants.append(integral(points, n * -1))
+
+for j in constants:
+    print(j)
 
 
 # # The average of the points
