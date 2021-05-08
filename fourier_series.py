@@ -372,14 +372,10 @@ def screen_size():
     return 600, 600
 
 
-def create_circles(root_circle_parameters, circle_parameters,
-                   dotdraw_parameters=None, draw=True):
-
+def create_circles(screen, file):
     # TODO: Turn this into  a for loop. e.g. range(-2, 5). Will take a list of constants (c) and will use the i for (n)
-    # Start initial object
-    # This is done so we are able to replace the
-    # coordinates for the next objects
-    pass
+
+    return
 
 def main():
     pygame.init()
