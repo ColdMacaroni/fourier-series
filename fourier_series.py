@@ -10,7 +10,7 @@ import math
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = 5  # px
+    unit = 0.03  # px
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
