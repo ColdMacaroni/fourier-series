@@ -30,6 +30,7 @@ class Circle:
         :param c_stroke: Stroke size for the circumference
         :param r_stroke: Stroke size for the radius
         """
+        # Parameters
         self.screen = screen
         self.constant = constant
         self.pos = pos
@@ -42,9 +43,12 @@ class Circle:
         self.c_stroke = c_stroke
         self.r_stroke = r_stroke
 
+        # Values that'll change
         self.t = 0
         self.radius = self.constant.real
         self.origin = 0j
+        self.attached_object = None
+        self.e_result = self.equation()
         # NOTE: Centre of the circle is parent's equation result
 
         # Circles will need the following parameters
@@ -99,8 +103,16 @@ class Circle:
         self.origin = origin
 
     def set_t(self, t):
+        """
+        Updates t value and equation result
+        :param t: float 0 <= t <= 1
+        """
         if 0 <= t <= 1:
+            # Update t
             self.t = t
+
+            # This is done to avoid multiple method calls
+            self.e_result = self.equation()
         else:
             raise ValueError('t must be between 0 and 1 (inclusive)')
 
@@ -116,7 +128,7 @@ class Circle:
         """
         Gets the radian from the current t value
         """
-        point = self.equation()
+        point = self.e_result
 
         rad = math.acos((point.real - self.origin.real) / self.radius)
 
@@ -130,6 +142,31 @@ class Circle:
 
         return xy(x, y)
 
+    def update(self, t, new_origin=None):
+        """
+        Update the circle with a new t value
+        :param t: float
+        :param new_origin:
+        :return:
+        """
+        # Change origin
+        if new_origin is not None:
+            self.origin = new_origin
+
+        # Update t value
+        self.set_t(t)
+
+        # Draw circumference
+        if self.show_circumference:
+            self.draw_circumference()
+
+        # Draw radius
+        if self.show_radius:
+            self.draw_circumference()
+
+        if self.attached_object is not None:
+            self.attached_object.update(t, self.e_result)
+
     def draw_radius(self):
         """
         Draws the radius of a circle based on the equation and the
@@ -137,7 +174,7 @@ class Circle:
         """
         # Get coordinates at circumference
         if self.show_radius:
-            pt = self.equation()
+            pt = self.e_result
 
             pygame.draw.line(self.screen,
                              self.radius_color,
@@ -154,12 +191,10 @@ class Circle:
             height = width = self.radius * 2 * self.unit
 
             # -- Create a rectangle object for the circle.
-            # Shift the rect so the center of the circle is at given coordinates
 
             x, y = self.pygame_coords(self.origin)
 
-            # Good up to here
-            # PYGAME COORDS. Start from top left.
+            # Shift the rect so the center of the circle is at given coordinates
             x = x - width / 2
             y = y - height / 2
 
@@ -538,7 +573,9 @@ def main():
 
     test = Circle(screen, 1+1j, 1)
 
-    test.set_t(0.2)
+    # This value will increase by increment each loop
+    increment = 0.01
+    t = 0
 
     # dp = 5
     # dots = []
@@ -547,6 +584,10 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+
+        # Reset t
+        if not 0 <= t <= 1:
+            t = 0
 
         screen.fill(color['white'])
 
@@ -568,7 +609,9 @@ def main():
         # circle.update(increment)
 
         # --
-        test.draw_circumference()
+        test.update(t)
+
+        t += increment
 
         pygame.display.flip()
         clock.tick(60)
