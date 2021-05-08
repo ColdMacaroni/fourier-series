@@ -123,9 +123,10 @@ except ValueError:
     print("Make sure the factor is a float. E.g. 0.7")
     factor = input("Scale factor: ")
 
+# This does not work
 points = [(y[0] * factor, y[1] * -factor) for y in raw_points]
 
-points = raw_points
+#points = raw_points
 
 points = [coords_to_complex(x) for x in points]
 
