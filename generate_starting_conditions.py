@@ -123,10 +123,22 @@ except ValueError:
     print("Make sure the factor is a float. E.g. 0.7")
     factor = input("Scale factor: ")
 
-# This does not work
+# Flip y axis, svgs are upside down for osme reason
 points = [(y[0] * factor, y[1] * -factor) for y in raw_points]
 
-#points = raw_points
+# -- Move points to 0, 0 -- #
+
+# Split list into x and y
+
+# Get average
+
+# Find diff from 0,0
+
+# Apply that diff to all points
+
+# profit
+
+# --
 
 points = [coords_to_complex(x) for x in points]
 

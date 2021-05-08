@@ -401,8 +401,10 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
     # Convert to numbers
     constants = [complex(x) for x in constants_ls]
 
+    # Get numbers for the following sequence
     actual_nums = int((len(constants) - 1) / 2)
 
+    # This generates a sequence of 0, 1, -1, 2, -2, etc
     nums = []
     for i in range(0, actual_nums + 1):
         nums.append(i)
@@ -410,12 +412,9 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
         if i != 0:
             nums.append(i * -1)
 
-    print(nums)
-
     # Start making objects
     circles = []
     for const in range(0, len(constants)):
-        print(constants[const])
         circles.append(Circle(screen, constants[const], nums[const]))
 
     # Reverse the list for attaching
@@ -442,21 +441,7 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    # TODO: Generate circle series
-
     circle = create_circles(screen, "constants")
-
-    #    test = Circle(screen, 1+0j, -1)
-
-    #test2 = Circle(screen, 1+0j, 2)
-
-    #dot = DrawDots(screen, color['blue'], color['green'])
-
-    #test2.attach(dot)
-
-    #test.attach(test2)
-
-    # circle = Circle(screen, 1+0j, 1)
 
     # This value will increase by increment each loop
     increment = 0.001
