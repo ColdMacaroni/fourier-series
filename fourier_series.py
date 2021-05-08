@@ -36,6 +36,21 @@ class Circle:
                default=1
         """
 
+        # NOTE: The formula for the circle is
+        # c * e^(n * 2 * π * 1j * t)
+        # n determines how many revolutions per second
+        # t is a normal number that'll denote the point in the circle's
+        # circumference. 0 <= t <= 1
+
+        # c is a constant that will determine the circle's nature
+        # Its real part will determine the size and its complex part
+        # will determine the revolutions per second
+
+        # Send the coordinates given by the equation above to the child
+        # Child will add those to its own to get origin (0,0 + parent)
+        # and radius point (equation + parent). Then send the radius
+        # point to its own child
+
         # Start the boy up
         self.screen = screen
         self.center_coords = coords
@@ -212,6 +227,11 @@ class DrawDots:
                 self.draw_line(self.dots[dot-1], self.dots[dot])
                 self.draw_dot(self.dots[dot])
 
+
+# TODO: Function to convert imaginary numbers to points in xy plane.
+# num = 6+7j
+# num.real = 6 = x
+# num.imag = 7 = y
 
 def xy(x, y):
     """
