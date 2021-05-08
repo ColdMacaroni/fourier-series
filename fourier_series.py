@@ -11,7 +11,74 @@ import math
 #  unit. e.g. unit=50px
 
 # TODO: Create method for the equation.
+
+
 class Circle:
+    # Values are all normal within calculations.
+    # This will be used for drawing in pygame
+    unit = 50
+
+    def __init__(self, constant, pos,
+                 circle_color=(0, 0, 0), radius_color=(255, 0, 0),
+                 show_circumference=True, show_radius=True, stroke=1):
+        """
+        Generate a circle based on c * e^(n * 2 * π * 1j * t)
+        :param constant: c. A complex number
+        :param pos: The position in a series of Circles. int
+        :param circle_color: rgb value of circumference
+        :param radius_color: rgb value of radius
+        :param show_circumference: Boolean for drawing circumference
+        :param show_radius: Boolean for drawing radius
+        :param stroke: Stroke size for drawing
+        """
+        self.constant = constant
+        self.pos = pos
+
+        # Keywords
+        self.circle_color = circle_color
+        self.radius_color = radius_color
+        self.show_circumference = show_circumference
+        self.show_radius = show_radius
+        self.stroke = stroke
+
+        # Circles will need the following parameters
+        # n
+        # c
+        # Starting coords
+        # They will need a method to get the result of the equation
+        # from a given t
+
+        # Attach method and such will still work.
+        # Radians and all that would be kinda useless
+
+        # c.real = radius
+
+        # NOTE: The formula for the circle is
+        # c * e^(n * 2 * π * 1j * t)
+        # n determines how many revolutions per second
+        # t is a normal number that'll denote the point in the circle's
+        # circumference. 0 <= t <= 1
+
+        # c is a constant that will determine the circle's nature
+        # Its real part will determine the size and its complex part
+        # will determine the revolutions per second
+
+        # Send the coordinates given by the equation above to the child
+        # Child will add those to its own to get origin (0,0 + parent)
+        # and radius point (equation + parent). Then send the radius
+        # point to its own child
+
+    def equation(self, t):
+        """
+        0 <= t <= 1
+        self.constant * e^(self.pos * 2 * π * 1j * t)
+        :param t: normal value
+        :return: complex number
+        """
+        return self.constant * math.e ** (self.pos * 2 * math.pi * 1j * t)
+
+
+class OldCircle:
     def __init__(self, screen, coords, radius, const, radian,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
                  show_circumference=True, show_radius=True, stroke=1):
@@ -243,7 +310,7 @@ class DrawDots:
                 self.draw_dot(self.dots[dot])
 
 
-def i_xy(num=int):
+def i_xy(num):
     """
     turns an imaginary number to x, y coordinates
     y=i
