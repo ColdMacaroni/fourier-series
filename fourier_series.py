@@ -320,16 +320,17 @@ def main():
     clock = pygame.time.Clock()
 
     # Generate circle series
-    circle = create_circles([screen, xy(0, 0), 50, 0, 2], [
-        [screen, None, 35, -0.8, 0],
-        [screen, None, 20, 2, 0.5],
+    circle = create_circles([screen, xy(0, 0), 50, 0.1, 2], [
+        [screen, None, 35, -1, 0],
+        [screen, None, 10, 2, 0.5],
+        [screen, None, 15, -3, math.pi],
     ], [screen, color['blue'], color['green']])
 
     # Increment is how much the radian will change per time unit
     # At an increment of 2*math.pi/120, the radian will go through a
     # full rotation after 120 time units. (2s if running at 60fps)
 
-    increment = 2*math.pi / 120
+    increment = 2*math.pi / 220
 
     # dp = 5
     # dots = []
