@@ -41,6 +41,11 @@ class Circle:
         self.show_radius = show_radius
         self.stroke = stroke
 
+        self.t = 0
+        self.radius = self.constant.real
+        self.origin = 0j
+        # NOTE: Centre of the circle is parent's equation result
+
         # Circles will need the following parameters
         # n
         # c
@@ -68,14 +73,33 @@ class Circle:
         # and radius point (equation + parent). Then send the radius
         # point to its own child
 
-    def equation(self, t):
+    def set_origin(self, origin):
+        self.origin = origin
+
+    def set_t(self, t):
+        if 0 <= t <= 1:
+            self.t = t
+        else:
+            raise ValueError('t must be between 0 and 1 (inclusive)')
+
+    def equation(self):
         """
         0 <= t <= 1
         self.constant * e^(self.pos * 2 * π * 1j * t)
         :param t: normal value
         :return: complex number
         """
-        return self.constant * math.e ** (self.pos * 2 * math.pi * 1j * t)
+        return self.origin + (self.constant * math.e ** (self.pos * 2 * math.pi * 1j * self.t))
+
+    def get_radian(self):
+        """
+        Gets the radian from the current t value
+        """
+        point = self.equation()
+
+        rad = math.acos((point.real - self.origin.real) / self.radius)
+
+        return rad
 
 
 class OldCircle:
