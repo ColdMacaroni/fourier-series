@@ -4,7 +4,6 @@
 # fourier_series.py
 # Create circles from complex numbers
 # coords = coordinates
-import this
 
 import pygame
 import math
@@ -109,7 +108,6 @@ class Circle:
         """
         0 <= t <= 1
         self.constant * e^(self.pos * 2 * π * 1j * t)
-        :param t: normal value
         :return: complex number
         """
         return self.origin + (self.constant * math.e ** (self.pos * 2 * math.pi * 1j * self.t))
@@ -155,6 +153,7 @@ class Circle:
             # Same width and height. i.e. perfect circle.
             height = width = self.radius * 2
 
+            # All good up to here
             # -- Create a rectangle object for the circle.
             # Shift the rect so the center of the circle is at given coordinates
 
@@ -295,6 +294,8 @@ class OldCircle:
         # Shift the rect so the center of the circle is at given coordinates
         x = self.center_coords[0] - width / 2
         y = self.center_coords[1] - height / 2
+
+        print(x, y, "", width, height)
 
         # Create the rectangle object
         rect = pygame.Rect((x, y), (width, height))
@@ -564,7 +565,7 @@ def main():
                          xy(0, -height/2))
 
         # Circles
-        #circle.update(increment)
+        # circle.update(increment)
 
         # --
         test.draw_circumference()
