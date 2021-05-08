@@ -4,25 +4,23 @@
 # fourier_series.py
 # Create circles from complex numbers
 # coords = coordinates
+import this
+
 import pygame
 import math
-
-# TODO: When time comes to draw the circles. The values will be somewhere around 0 and 1. Multiple those by some
-#  unit. e.g. unit=50px
-
-# TODO: Create method for the equation.
 
 
 class Circle:
     # Values are all normal within calculations.
     # This will be used for drawing in pygame
-    unit = 50
+    unit = 50  # px
 
-    def __init__(self, constant, pos,
+    def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
                  show_circumference=True, show_radius=True, stroke=1):
         """
         Generate a circle based on c * e^(n * 2 * π * 1j * t)
+        :param screen: Pygame screen
         :param constant: c. A complex number
         :param pos: The position in a series of Circles. int
         :param circle_color: rgb value of circumference
@@ -31,6 +29,7 @@ class Circle:
         :param show_radius: Boolean for drawing radius
         :param stroke: Stroke size for drawing
         """
+        self.screen = screen
         self.constant = constant
         self.pos = pos
 
@@ -73,6 +72,18 @@ class Circle:
         # and radius point (equation + parent). Then send the radius
         # point to its own child
 
+    def config(self, show_circumference=None, show_radius=None):
+        """
+        Change visibility settings during runtime
+        :param show_circumference: Bool
+        :param show_radius: Bool
+        """
+        if show_circumference is not None:
+            self.show_circumference = show_circumference
+
+        if show_radius is not None:
+            self.show_radius = show_radius
+
     def set_origin(self, origin):
         self.origin = origin
 
@@ -101,6 +112,18 @@ class Circle:
 
         return rad
 
+    def draw_radius(self):
+        """
+        Draws the radius of a circle based on the radian given and the
+        original coordinates.
+        """
+        # Get coordinates at circumference
+        pt = self.equation()
+
+        pygame.draw.line(self.screen,
+                         self.radius_color,
+                         xy(*i_xy(self.origin)),
+                         xy(*i_xy(pt)))
 
 class OldCircle:
     def __init__(self, screen, coords, radius, const, radian,
