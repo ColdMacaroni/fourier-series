@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Generate starting sequences for fourier series
+import math
 
 def write_complex(file, num):
     if num.imag < 0:
@@ -7,7 +8,7 @@ def write_complex(file, num):
     else:
         line = "{}+{}j".format(num.real, num.imag)
 
-    file.write(line)
+    file.write(line + ';')
 
 
 def coords_to_complex(coords):
@@ -16,10 +17,21 @@ def coords_to_complex(coords):
 
 file = open('constants', 'a')
 
+# The average of the points
+# See https://github.com/ColdMacaroni/pygame-bezier
 avg_pt = (-13.399837757, 25.824553376666657)
 
-first = coords_to_complex(avg_pt)
+# Calculate the value c0
+static = coords_to_complex(avg_pt)
 
-write_complex(file, first)
+constants = []
 
+# Amount of circles
+amount = 10
+for n in range(-amount, amount + 1):
+    const = static * pow(math.e, (n * -1) * 2 * math.pi * 1j)
+    constants.append(const)
 
+for i in range(len(constants)):
+    print(i - amount, constants[i])
+    write_complex(file, constants[i])
