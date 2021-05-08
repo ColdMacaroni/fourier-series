@@ -94,8 +94,8 @@ for n in range(0, numbers + 1):
     if n != 0:
         constants.append(integral(points, n * -1))
 
-for j in constants:
-    print(j)
+#for j in constants:
+#    print(j)
 
 
 # # The average of the points
@@ -113,6 +113,6 @@ for j in constants:
 #     const = static * pow(math.e, (n * -1) * 2 * math.pi * 1j)
 #     constants.append(const)
 #
-# for i in range(len(constants)):
-#     print(i, constants[i])
-#     write_complex(constants[i])
+for i in range(len(constants)):
+    print(i, constants[i])
+    write_complex(constants[i])
