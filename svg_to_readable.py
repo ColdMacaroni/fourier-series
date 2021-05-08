@@ -116,7 +116,10 @@ def main(filename):
         # If the lenght of the list -1 isnt a multiple of three:
         raise Exception('Make sure the input is a relative cubic bezier')
 
-    first_coord, *rest = coord_list
+    # Replace first one with 0, 0
+    # first_coord = (0, 0)
+    first_coord = coord_list[0]
+    rest = coord_list[1:]
 
     # Split the list into sections of three
     extra_coords = make_sections(rest.copy(), 3)

@@ -4,6 +4,7 @@ import math
 from sys import argv
 import svg_to_readable
 
+
 def cubic_bezier(p0, p1, p2, p3, t):
     """
     Returns the point
@@ -25,10 +26,21 @@ def cubic_bezier(p0, p1, p2, p3, t):
 def generate_points(control_points):
     _points = []
 
-    increment = 0.05
+    try:
+        increment = abs(float(argv[4]))
+
+    except IndexError:
+        print('Argument 4 should be the resolution for the bezier curve. '+
+              'The closer to 0 the better.')
+        exit(0)
+
+    except ValueError:
+        print('Argument 4 must be a float')
+        exit(0)
+
     t = -increment
     while t <= 1:
-        points.append(cubic_bezier(*control_points, t))
+        _points.append(cubic_bezier(*control_points, t))
 
         t += increment
 
@@ -52,7 +64,7 @@ def integral(pts, n):
 
 
 def write_complex(num):
-    with open('constants', 'a') as file:
+    with open(filename, 'a') as file:
         if num.imag < 0:
             line = "{}{}j".format(num.real, num.imag)
         else:
@@ -66,21 +78,47 @@ def coords_to_complex(coords):
     return num
 
 
-cps = svg_to_readable.main(argv[1])
+try:
+    cps = svg_to_readable.main(argv[1])
+except IndexError:
+    print('Argument 1 should be an svg file')
+    exit(0)
+
 
 # This will sequentially create all points.
 # They'll be one after the other
-points = []
+raw_points = []
 for cp in cps:
-    points += generate_points(cp)
+    raw_points += generate_points(cp)
+
+# Scale the svg
+try:
+    factor = float(argv[3])
+except IndexError:
+    print('Argument 3 should be the scaling factor for the points')
+    exit(0)
+
+except ValueError:
+    print('Argument 3 must be a float')
+    exit(0)
+
+points = [(y[0] * factor, y[1] * -factor) for y in raw_points]
 
 points = [coords_to_complex(x) for x in points]
 
-
-
 # Now we have the points in order and in imaginary plane
 constants = []
-numbers = 50
+try:
+    numbers = int(argv[2])
+
+except IndexError:
+    print('Argument 2 should be half the amount of circles')
+    exit(0)
+
+except ValueError:
+    print('Argument 2 must be an int')
+    exit(0)
+
 for n in range(0, numbers + 1):
     constants.append(integral(points, n))
 
@@ -105,7 +143,12 @@ for n in range(0, numbers + 1):
 # for n in range(0, amount + 1):
 #     const = static * pow(math.e, (n * -1) * 2 * math.pi * 1j)
 #     constants.append(const)
-#
+
+# Clear file
+filename = 'constants'
+with open(filename, 'w') as file:
+    file.write('')
+
 for i in range(len(constants)):
     print(i, constants[i])
     write_complex(constants[i])
