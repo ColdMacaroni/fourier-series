@@ -54,7 +54,6 @@ def tuplify_d(ls):
     """
     new_ls = []
     for item in ls:
-        print(item)
         new_item = [item[0]]
 
         # Go 2 by 2 to add the coords together
@@ -63,9 +62,6 @@ def tuplify_d(ls):
             coord = item[pos], item[pos + 1]
 
             new_item.append(coord)
-
-        print(new_item)
-        print()
 
         new_ls.append(new_item)
     return new_ls
@@ -91,12 +87,27 @@ def sep_commands(ls):
     return new_ls
 
 
-def relative_to_absolute(sep_ls):
+def add_xy(coord1, coord2):
+    """
+    Add two coordinates together
+    """
+    return coord1[0] + coord2[0], coord1[1] + coord2[1]
+
+def relative_to_absolute(ls):
     """
     Taking a list generated from sep_commands(), convert
     the values to absolute ones
     """
-    pass
+    new_ls = []
+
+    # Set the current position to the one it was moved to
+    if ls[0][0].lower() == "m":
+        current = ls[0][1][0]
+
+    else:
+        current = (0, 0)
+
+    print(current)
 
 
 def separate_points(sep_ls):
@@ -104,9 +115,10 @@ def separate_points(sep_ls):
     Taking a list generated from sep_commands(), it'll convert
     the commands to separate continuous ones
     """
+    # NOTE: This can be used for h and v support
     # Shortcuts
-    horiz = lambda x: ['l', [(x, 0)]]
-    verti = lambda y: ['l', [(0, y)]]
+    # horiz = lambda x: ['l', [(x, 0)]]
+    # verti = lambda y: ['l', [(0, y)]]
 
     # The minimum amount of attributes each has
     # coms is short for commands
@@ -155,9 +167,9 @@ def main(filename):
     command_list = separate_points(processed_list)
 
     # Convert relative values to absolute ones
+    absolute_list = relative_to_absolute(command_list)
 
-
-    return command_list
+    return absolute_list
 
 
 if __name__ == "__main__":
