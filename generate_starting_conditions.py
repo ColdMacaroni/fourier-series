@@ -140,8 +140,6 @@ def main():
     # Normalize points
     points = normalize_coords(points)
 
-    print(points)
-
     # Move it to 0, 0
     points = [(coord[0] - .5, coord[1] - .5) for coord in points]
 
