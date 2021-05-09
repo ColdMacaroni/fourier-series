@@ -127,7 +127,7 @@ def main():
     resolution = 40
 
     try:
-        resolution = float(argv[1])
+        resolution = float(argv[2])
 
     except IndexError:
         resolution = float(input("Enter a resolution, the higher the better: ").strip())
