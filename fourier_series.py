@@ -289,8 +289,6 @@ class DrawDots:
         # This variable is not useful
         del t
 
-        print(complex)
-
         if complex is not None:
             coords = complex.real * Circle.unit, complex.imag * Circle.unit
             new_coords = xy(*coords)
