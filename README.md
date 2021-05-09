@@ -5,4 +5,6 @@ This also means the circles will be calculated using complex numbers. It should 
 
 SO uh yeah i made a circle in pygame
 
+I had to learn calculus against my will
+
 Trying to use objects!
