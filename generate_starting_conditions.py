@@ -149,15 +149,15 @@ def normalize(min_val, max_val, value):
     return (value - min_val) / (max_val - min_val)
 
 
-# TODO: Put all this into functions
-# TODO: Normalize values
 def main():
     try:
         filename = argv[1]
     except IndexError:
         filename = input("Filename of svg file: ")
 
-    cps = svg_to_readable.main(filename)
+    # The pt_type will specific if to call cubic_bezier or linear
+    # quadratic beziers not yet supported
+    cps, pt_type = svg_to_readable.main(filename)
 
     try:
         # Try to read the increment from args
@@ -186,20 +186,6 @@ def main():
     raw_points = []
     for cp in cps:
         raw_points += generate_points(cp, resolution)
-
-    # NOTE: This will be removed once normalizing values is implemented
-    # The size handling and all that should be done form the
-    # fourier_series.py file
-
-    # Scale the svg
-    # try:
-    #     factor = float(argv[3])
-    # except IndexError:
-    #     factor = float(input("Enter a scale factor for the svg: "))
-    #
-    # except ValueError:
-    #     print("Make sure the factor is a float. E.g. 0.7")
-    #     factor = input("Scale factor: ")
 
     # Flip y axis, svgs are upside down for some reason
     points = [(coord[0], coord[1] * -1) for coord in raw_points]

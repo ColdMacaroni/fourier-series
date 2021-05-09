@@ -129,18 +129,30 @@ def cubic_relative_bezier(filename):
     return bezier_coords
 
 
-def linear_relative
+def linear_relative(filename):
+    pass
 
 
 def main(filename):
-    types = {"cubic relative": cubic_relative_bezier(filename),
-             "linear absolute": }
+    # Function for each type
+    svg_types = {"cubic relative": cubic_relative_bezier(filename),
+                 "linear absolute": linear_relative(filename)}
 
+    # Query the user, listing types
     print("What type of bezier curve does your svg use?")
-    print("Available types are \"{}\"".format(", ".join(types.keys())))
-    type = input()
+    print("Available types are \"{}\"".format(", ".join(svg_types.keys())))
+    svg_type = input()
+
+    # Check if it exists
+    if svg_type not in svg_types:
+        raise Exception('Invalid/Not supported svg type')
+
+    # Call relevant function
+    points = svg_types[svg_type]
+
+    return points, svg_type
 
 
 if __name__ == "__main__":
-    print(main())
+    print(main(input("File: ")))
 
