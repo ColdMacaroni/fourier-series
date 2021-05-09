@@ -237,7 +237,7 @@ class Circle:
 class DrawDots:
     def __init__(self, screen, dot_color, line_color,
                  precision=2, dots=None, dot_size=1,
-                 show_dot=True, show_line=True):
+                 show_dot=True, show_line=False):
         """
         :param screen: Pygame screen
         :param dot_color: Color for each dot
