@@ -73,6 +73,15 @@ def coords_to_complex(coords):
     return num
 
 
+def split_xy(pts):
+    """
+    Returns all x points in one list and all y points in one list
+    """
+    x_points = [x[0] for x in pts]
+    y_points = [y[1] for y in pts]
+    return x_points, y_points
+
+
 def move_to_target(pts, target=(0, 0)):
     """
     This function changes a set of points' center to the
@@ -80,8 +89,7 @@ def move_to_target(pts, target=(0, 0)):
     """
     # -- Move points to 0, 0 -- #
     # Split list into x and y
-    x_points = [x[0] for x in pts]
-    y_points = [y[1] for y in pts]
+    x_points, y_points = split_xy(pts)
 
     # Get average
     x_avg = sum(x_points) / len(x_points)
@@ -95,6 +103,27 @@ def move_to_target(pts, target=(0, 0)):
     new_y = [coord + y_diff for coord in y_points]
 
     return list(zip(new_x, new_y))
+
+
+def get_biggest_range(*values):
+    """
+    Returns the biggest range from the list of values.
+    """
+    ranges = []
+    for value in values:
+        ranges.append(max(value) - min(value))
+
+    return max(ranges)
+
+
+def normalize_coords(pts):
+    """
+    Normalizes a bunch of points
+    """
+    distance = get_biggest_range(split_xy(pts))
+
+
+
 
 
 # TODO: Put all this into functions
@@ -151,6 +180,9 @@ def main():
 
     # Flip y axis, svgs are upside down for some reason
     points = [(coord[0] * factor, coord[1] * -factor) for coord in raw_points]
+
+    # Normalize points
+    points = normalize_coords(points)
 
     # Move it to 0, 0
     points = move_to_target(points)
