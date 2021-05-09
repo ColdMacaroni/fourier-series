@@ -117,8 +117,8 @@ def main(filename):
         raise Exception('Make sure the input is a relative cubic bezier')
 
     # Replace first one with 0, 0
-    # first_coord = (0, 0)
-    first_coord = coord_list[0]
+    first_coord = (0, 0)
+    #first_coord = coord_list[0]
     rest = coord_list[1:]
 
     # Split the list into sections of three
