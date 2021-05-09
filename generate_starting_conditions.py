@@ -114,7 +114,6 @@ def get_biggest_range(*values):
     for value in values:
         ranges.append(max(value) - min(value))
 
-    print(max(ranges))
     return max(ranges)
 
 
@@ -202,14 +201,16 @@ def main():
     #     print("Make sure the factor is a float. E.g. 0.7")
     #     factor = input("Scale factor: ")
 
-    # Normalize points
-    points = normalize_coords(raw_points)
-
     # Flip y axis, svgs are upside down for some reason
-    points = [(coord[0] * 2, coord[1] * -2) for coord in points]
+    points = [(coord[0], coord[1] * -1) for coord in raw_points]
+
+    # Normalize points
+    points = normalize_coords(points)
+
+    print(points)
 
     # Move it to 0, 0
-    points = [(coord[0] - 1, coord[1] + 1) for coord in points]
+    points = [(coord[0] - .5, coord[1] - .5) for coord in points]
 
     # Convert the coordinates to complex numbers
     complex_points = [coords_to_complex(x) for x in points]
