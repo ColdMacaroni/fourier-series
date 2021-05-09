@@ -73,6 +73,30 @@ def coords_to_complex(coords):
     return num
 
 
+def move_to_target(pts, target=(0, 0)):
+    """
+    This function changes a set of points' center to the
+    target coordinates
+    """
+    # -- Move points to 0, 0 -- #
+    # Split list into x and y
+    x_points = [x[0] for x in pts]
+    y_points = [y[1] for y in pts]
+
+    # Get average
+    x_avg = sum(x_points) / len(x_points)
+    y_avg = sum(y_points) / len(y_points)
+
+    # Find diff from 0,0
+    x_diff = target[0] - x_avg
+    y_diff = target[1] - y_avg
+
+    new_x = [coord + x_diff for coord in x_points]
+    new_y = [coord + y_diff for coord in y_points]
+
+    return list(zip(new_x, new_y))
+
+# TODO: Put all this into functions
 # TODO: Normalize values
 try:
     filename = argv[1]
@@ -126,22 +150,7 @@ except ValueError:
 # Flip y axis, svgs are upside down for some reason
 points = [(coord[0] * factor, coord[1] * -factor) for coord in raw_points]
 
-# -- Move points to 0, 0 -- #
-target = (0, 0)
-
-# Split list into x and y
-x_points = [x[0] for x in points]
-y_points = [y[1] for y in points]
-
-# Get average
-x_avg = sum(x_points) / len(x_points)
-y_avg = sum(y_points) / len(y_points)
-
-# Find diff from 0,0
-x_diff = target[0] - x_avg
-y_diff = target[1] - y_avg
-
-new_x = [coord + x_diff for coord in x_points]
+points = move_to_target(points)
 
 # Apply that diff to all points
 
@@ -149,9 +158,7 @@ new_x = [coord + x_diff for coord in x_points]
 
 # --
 
-exit()
-
-points = [coords_to_complex(x) for x in points]
+complex_points = [coords_to_complex(x) for x in points]
 
 # Now we have the points in order and in imaginary plane
 constants = []
@@ -167,12 +174,12 @@ except ValueError:
 
 for n in range(0, numbers + 1):
     # Generate the circles
-    constants.append(integral(points, n))
+    constants.append(integral(complex_points, n))
 
     # Create an "opposite" circle right next to
     # the current one
     if n != 0:
-        constants.append(integral(points, n * -1))
+        constants.append(integral(complex_points, n * -1))
 
 # By the end, the values would look like
 # 0
