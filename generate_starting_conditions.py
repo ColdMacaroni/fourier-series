@@ -150,17 +150,12 @@ except ValueError:
 # Flip y axis, svgs are upside down for some reason
 points = [(coord[0] * factor, coord[1] * -factor) for coord in raw_points]
 
+# Move it to 0, 0
 points = move_to_target(points)
 
-# Apply that diff to all points
-
-# profit
-
-# --
-
+# Convert the coordinates to complex numbers
 complex_points = [coords_to_complex(x) for x in points]
 
-# Now we have the points in order and in imaginary plane
 constants = []
 try:
     numbers = int(argv[2])
