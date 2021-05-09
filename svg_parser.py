@@ -187,11 +187,23 @@ def separate_points(sep_ls):
 
 
 # -- Equations -- #
+def line(arg_points, t):
+    """
+    Returns the point according to t
+    """
+    # Wanted a useful docstring? Too bad!
+    coords = []
+    p0, p1 = arg_points
 
-# TODO: line
-def line(start, end, t):
-    # y = mx + c ig?
-    pass
+    # for x and then y
+    # What's programming without a little mischief?
+    for i in [0, 1]:
+        # https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Linear_B%C3%A9zier_curves
+        num = p0[i] + t * (p1[i] - p0[i])
+
+        coords.append(num)
+
+    return tuple(coords)
 
 
 # NOTE: NOT TESTED!!
@@ -205,6 +217,8 @@ def cubic_bezier(arg_points, t):
     for i in [0, 1]:
         # Equation from
         # https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves
+
+        # TODO: Change these to pow()
         num = (((1 - t) ** 3) * p0[i]) \
               + (3 * t * ((1 - t) ** 2) * p1[i]) \
               + (3 * (t ** 2) * (1 - t) * p2[i]) \
@@ -215,10 +229,23 @@ def cubic_bezier(arg_points, t):
     return tuple(coords)
 
 
-# TODO: quadratic bezier
 def quadratic_bezier(arg_points, t):
-    pass
+    """
+    Returns the point according to t
+    """
+    coords = []
+    p0, p1, p2 = arg_points
 
+    # For x and then y
+    for i in [0, 1]:
+        # https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Quadratic_B%C3%A9zier_curves
+        num = (pow(1 - t, 2) * p0[i])\
+              + (2 * (1 - t) * t * p1[i])\
+              + (pow(t, 2) * p2[i])
+
+        coords.append(num)
+
+    return tuple(coords)
 
 # --
 
@@ -266,11 +293,11 @@ def main(filename):
 
         # Cubic bezier
         "c": cubic_bezier,
-        "s": not_supported(),
+        "s": not_supported,
 
         # Quadratic bezier
-        "q": quadratic_bezier(),
-        "t": not_supported(),
+        "q": quadratic_bezier,
+        "t": not_supported,
     }
 
     # A default value
@@ -285,10 +312,23 @@ def main(filename):
         print("Using", resolution, "as resolution.")
 
     # Start calculating values
+    points = []
+
     increment = pow(resolution, -1)
+    for command in absolute_list:
+        print(command)
+        # Get relevant equation
+        eq, args = command
 
+        equation = equations[eq]
 
-    return absolute_list
+        # Calculate values
+        t = 0
+        while 0 <= t <= 1:
+            points.append(equation(args, t))
+            t += increment
+
+    return points
 
 
 if __name__ == "__main__":
