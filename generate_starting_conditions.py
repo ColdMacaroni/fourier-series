@@ -217,6 +217,8 @@ def main():
     # Convert the coordinates to complex numbers
     complex_points = [coords_to_complex(x) for x in points]
 
+    print([complex_points])
+
     constants = []
     try:
         numbers = int(argv[2])
