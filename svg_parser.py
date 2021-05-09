@@ -22,7 +22,7 @@ def get_d(filename):
     return ctrl_points
 
 
-def tuplify_coords(ls):
+def tuplify_d(ls):
     """
     Converts strings like "print(processed_list)0.4,-34" to (0.4, -34)
     """
@@ -59,7 +59,9 @@ def main(filename):
     d_markers = get_d(filename)
 
     # Convert d to actual, usable data types
-    processed_list = tuplify_coords(d_markers)
+    processed_list = tuplify_d(d_markers)
+
+    
 
 
 
