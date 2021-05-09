@@ -55,6 +55,7 @@ def integral(pts, n):
 
     # To get the average we dont divide because its from values 0 to 1. x/1 = x
     c = sum(new_pts)
+
     return c
 
 
