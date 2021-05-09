@@ -186,6 +186,51 @@ def separate_points(sep_ls):
     return new_ls
 
 
+# -- Equations -- #
+
+# TODO: line
+def line(start, end, t):
+    # y = mx + c ig?
+    pass
+
+
+# NOTE: NOT TESTED!!
+def cubic_bezier(arg_points, t):
+    """
+    Returns the point according to t
+    """
+    coords = []
+    p0, p1, p2, p3 = arg_points
+    # for x and then y
+    for i in [0, 1]:
+        # Equation from
+        # https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves
+        num = (((1 - t) ** 3) * p0[i]) \
+              + (3 * t * ((1 - t) ** 2) * p1[i]) \
+              + (3 * (t ** 2) * (1 - t) * p2[i]) \
+              + ((t ** 3) * p3[i])
+
+        coords.append(num)
+
+    return tuple(coords)
+
+
+# TODO: quadratic bezier
+def quadratic_bezier(arg_points, t):
+    pass
+
+
+# --
+
+def not_supported(*args):
+    """
+    Sorry!!
+    """
+    raise Exception('Sorry!! There is not support for this '
+                    'svg command yet!! Please create an '
+                    'issue on github.')
+
+
 def main(filename):
     # Get the content of d
     d_markers = get_d(filename)
@@ -204,6 +249,44 @@ def main(filename):
 
     # Convert relative values to absolute ones
     absolute_list = relative_to_absolute(command_list)
+
+    # -- Start getting points. This could be a different file but
+    # im tired
+
+    # If i want to support s or t, id have to make a function to
+    # convert them to c/q
+    # https://www.w3.org/TR/SVG/paths.html#PathDataLinetoCommands
+    # What equation to use for each
+
+    equations = {
+        # Line
+        "l": line,
+        "h": not_supported,
+        "v": not_supported,
+
+        # Cubic bezier
+        "c": cubic_bezier,
+        "s": not_supported(),
+
+        # Quadratic bezier
+        "q": quadratic_bezier(),
+        "t": not_supported(),
+    }
+
+    # A default value
+    resolution = 100 // len(absolute_list)
+
+    try:
+        resolution = float(argv[2])
+
+    # PEP 8: E722 do not use bare 'except'
+    # Too bad!
+    except:
+        print("Using", resolution, "as resolution.")
+
+    # Start calculating values
+    increment = pow(resolution, -1)
+
 
     return absolute_list
 
