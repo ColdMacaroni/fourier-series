@@ -1,12 +1,14 @@
 # fourier-series
-This branch will be dedicated to making this program use a complex plane instead of a normal one
+To make your own. First use the generator to create a set of constants. 
 
-This also means the circles will be calculated using complex numbers. It should be the last step before being able to create a fourier series from any image
+`py generate_starting_conditions.py path/to/svg`
 
-Check complex-circles branch
+e.g. `py generate_starting_conditions.py svgs/duck.svg 20`
 
-SO uh yeah i made a circle in pygame
+It will ask you for a resolution. It corresponds to how finely it will calculate each path. Then the amount of *pairs* of circles. The more it has, the more accurate the final image will be.
 
-I had to learn calculus against my will
+Then run `py fourier_series.py`. It will read the constants and generate the series accordingly. You may specify a unit to determine the scale. Just try until the whole thing fits on the screen. Usually `1` is fine. It supports floats
 
-Trying to use objects!
+e.g. `py fourier_series.py 1.1` This will make it slightly bigger
+
+run time customizations coming soon ig
