@@ -2,46 +2,7 @@
 # Generate starting sequences for fourier series
 import math
 from sys import argv
-import svg_to_readable
-
-
-def cubic_bezier(arg_points, t):
-    """
-    Returns the point
-    """
-    coords = []
-    p0, p1, p2, p3 = arg_points
-    # for x and then y
-    for i in [0, 1]:
-        # Equation from
-        # https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves
-        num = (((1 - t)**3) * p0[i])\
-             + (3 * t * ((1 - t)**2) * p1[i])\
-             + (3 * (t**2) * (1 - t) * p2[i])\
-             + ((t**3) * p3[i])
-
-        coords.append(num)
-
-    return tuple(coords)
-
-
-def linear_absolute(arg_points, t):
-    """
-    Returns point
-    """
-    pass
-
-
-def generate_points(control_points, increment, function):
-    _points = []
-
-    t = -increment
-    while t <= 1:
-        _points.append(function(control_points, t))
-
-        t += increment
-
-    return _points
+import svg_parser
 
 
 def integral(pts, n):
@@ -158,57 +119,26 @@ def normalize(min_val, max_val, value):
 
 def main():
     try:
-        filename = argv[1]
+        svg_filename = argv[1]
     except IndexError:
-        filename = input("Filename of svg file: ")
+        svg_filename = input("Filename of svg file: ")
 
-    # The pt_type will specific if to call cubic_bezier or linear
-    # quadratic beziers not yet supported
-    cps, pt_type = svg_to_readable.main(filename)
+    # Backup value
+    resolution = 40
 
-    # -- get increment
     try:
-        # Try to read the increment from args
-        resolution = abs(float(argv[4])) ** -1
+        resolution = float(argv[2])
 
-    # Sorry for weird formatting, pep8
     except IndexError:
-        resolution = abs(
-            float(
-                input("Enter the resolution. "
-                      "A higher number is better, but slower: ").strip()
-            )
-        ) ** -1
+        resolution = float(input("Enter a resolution, the higher the better: ").strip())
 
-    except ValueError:
-        resolution = abs(
-            float(
-                input("Enter the resolution. "
-                      "A higher number is better, but slower. "
-                      "It should be a positive number: ").strip()
-            )
-        ) ** -1
-
-    # --
-
-    svg_types = {
-        "cubic relative": cubic_bezier,
-        "linear absolute": linear_absolute
-    }
-
-    # This will sequentially create all points.
-    # They'll be one after the other
-    raw_points = []
-    for cp in cps:
-        raw_points += generate_points(cp, resolution, svg_types[pt_type])
+    raw_points = svg_parser.main(svg_filename, resolution)
 
     # Flip y axis, svgs are upside down for some reason
     points = [(coord[0], coord[1] * -1) for coord in raw_points]
 
     # Normalize points
     points = normalize_coords(points)
-
-    print(points)
 
     # Move it to 0, 0
     points = [(coord[0] - .5, coord[1] - .5) for coord in points]
@@ -245,13 +175,13 @@ def main():
     # etc.s
 
     # Clear file
-    filename = 'constants'
-    with open(filename, 'w') as file:
+    writing_filename = 'constants'
+    with open(writing_filename, 'w') as file:
         file.write('')
 
     for i in range(len(constants)):
         print(i, constants[i])
-        write_complex(constants[i], filename)
+        write_complex(constants[i], writing_filename)
 
 
 if __name__ == "__main__":

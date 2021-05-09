@@ -15,11 +15,13 @@ class Circle:
         unit = float(argv[1])  # px
 
     except ValueError:
-        unit = float(input("Enter the value of 1 unit in pixels. "
+        unit = float(input("Enter the value of 1 unit. "
                            "Number can be a float: "))
 
     except IndexError:
-        unit = float(input("Enter the value of 1 unit in pixels: "))
+        unit = float(input("Enter the value of 1 unit: "))
+
+    unit /= 10
 
     def __init__(self, screen, constant, pos,
                  circle_color=(0, 0, 0), radius_color=(255, 0, 0),
