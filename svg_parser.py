@@ -258,7 +258,7 @@ def not_supported(*args):
                     'issue on github.')
 
 
-def main(filename):
+def main(filename, resolution):
     # Get the content of d
     d_markers = get_d(filename)
 
@@ -300,16 +300,7 @@ def main(filename):
         "t": not_supported,
     }
 
-    # A default value
-    resolution = 100 // len(absolute_list)
 
-    try:
-        resolution = float(argv[2])
-
-    # PEP 8: E722 do not use bare 'except'
-    # Too bad!
-    except:
-        print("Using", resolution, "as resolution.")
 
     # Start calculating values
     points = []
@@ -331,4 +322,15 @@ def main(filename):
 
 
 if __name__ == "__main__":
-    print(main(argv[1]))
+    # A default value
+    res = 20
+
+    try:
+        res = float(argv[2])
+
+    # PEP 8: E722 do not use bare 'except'
+    # Too bad!
+    except:
+        print("Using", res, "as resolution.")
+
+    print(main(argv[1], res))
