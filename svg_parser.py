@@ -148,10 +148,14 @@ def main(filename):
     # Group per command type
     separated_list = sep_commands(d_list)
 
+    # Convert coordinates to tuples
     processed_list = tuplify_d(separated_list)
 
     # Convert shorthand commands to full ones
     command_list = separate_points(processed_list)
+
+    # Convert relative values to absolute ones
+
 
     return command_list
 
