@@ -108,7 +108,7 @@ def convert_to_absolute(first, points):
     return coords
 
 
-def main(filename):
+def cubic_relative_bezier(filename):
     txt_list = get_nums(filename)
     coord_list = svg_str_to_tuple(txt_list)
 
@@ -127,6 +127,18 @@ def main(filename):
     bezier_coords = convert_to_absolute(first_coord, extra_coords)
 
     return bezier_coords
+
+
+def linear_relative
+
+
+def main(filename):
+    types = {"cubic relative": cubic_relative_bezier(filename),
+             "linear absolute": }
+
+    print("What type of bezier curve does your svg use?")
+    print("Available types are \"{}\"".format(", ".join(types.keys())))
+    type = input()
 
 
 if __name__ == "__main__":
