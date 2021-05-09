@@ -8,7 +8,7 @@ import bs4 as bs
 def get_d(filename):
     source = open(filename, 'r')
 
-    soup = bs.BeautifulSoup(source, 'xml')
+    soup = bs.BeautifulSoup(source, 'lxml')
 
     # This doesnt have support for multiple d or paths
     path = soup.find('path')
