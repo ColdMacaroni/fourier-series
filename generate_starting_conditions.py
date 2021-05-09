@@ -25,12 +25,19 @@ def cubic_bezier(arg_points, t):
     return tuple(coords)
 
 
-def generate_points(control_points, increment):
+def linear_absolute(arg_points, t):
+    """
+    Returns point
+    """
+    pass
+
+
+def generate_points(control_points, increment, function):
     _points = []
 
     t = -increment
     while t <= 1:
-        _points.append(cubic_bezier(control_points, t))
+        _points.append(function(control_points, t))
 
         t += increment
 
@@ -159,6 +166,7 @@ def main():
     # quadratic beziers not yet supported
     cps, pt_type = svg_to_readable.main(filename)
 
+    # -- get increment
     try:
         # Try to read the increment from args
         resolution = abs(float(argv[4])) ** -1
@@ -181,11 +189,18 @@ def main():
             )
         ) ** -1
 
+    # --
+
+    svg_types = {
+        "cubic relative": cubic_bezier,
+        "linear absolute": linear_absolute
+    }
+
     # This will sequentially create all points.
     # They'll be one after the other
     raw_points = []
     for cp in cps:
-        raw_points += generate_points(cp, resolution)
+        raw_points += generate_points(cp, resolution, svg_types[pt_type])
 
     # Flip y axis, svgs are upside down for some reason
     points = [(coord[0], coord[1] * -1) for coord in raw_points]
