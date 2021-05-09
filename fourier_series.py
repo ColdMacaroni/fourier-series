@@ -237,7 +237,7 @@ class Circle:
 class DrawDots:
     def __init__(self, screen, dot_color, line_color,
                  precision=2, dots=None, dot_size=1,
-                 show_dot=True, show_line=False):
+                 show_dot=True, show_line=True):
         """
         :param screen: Pygame screen
         :param dot_color: Color for each dot
@@ -311,12 +311,14 @@ class DrawDots:
             self.draw_dot(self.dots[0])
 
         else:
-            for dot in range(len(self.dots)):
+            for dot in range(len(self.dots)-1):
                 if self.show_line:
-                    self.draw_line(self.dots[dot-1], self.dots[dot])
+                    self.draw_line(self.dots[dot], self.dots[dot+1])
 
                 if self.show_dot:
                     self.draw_dot(self.dots[dot])
+
+            del dot
 
 
 def i_xy(num):
