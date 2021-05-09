@@ -428,14 +428,18 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
     # Attach a DrawDot object if requested
     if draw:
         circles[0].attach(DrawDots(screen, dot_color, line_color))
-
+        dots_obj = circles[0].attached_object
     # Starting at one so i can attach the *previous* obj to
     # the current one
     for obj in range(1, len(circles)):
         circles[obj].attach(circles[obj - 1])
 
     # Return the static circle
-    return circles[-1]
+    if draw:
+        return circles[-1], dots_obj
+
+    else:
+        return circles[-1]
 
 
 def main():
@@ -446,11 +450,21 @@ def main():
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    circle = create_circles(screen, "constants")
+    circle, drawdots_obj = create_circles(screen, "constants", draw=True)
 
     # This value will increase by increment each loop
     increment = 0.001
     t = 0
+
+    # TODO: Add shortcuts to pygame window to edit runtime stuff
+    # Like show radii circumference
+    # Zoom
+    # Move
+    # Speed
+
+    # Variable used for messing with draw dots obj
+    # resize = False
+
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -459,6 +473,7 @@ def main():
         # Reset t
         if not 0 <= t <= 1:
             t = 0
+            # resize = True
 
         screen.fill(color['white'])
 
@@ -485,7 +500,18 @@ def main():
         # circle.update(increment)
 
         # --
+        # Update the circle
         circle.update(t)
+
+        # Mess with the DrawDots obj
+        # drawdots_obj.dots = []  # This will clear the dots
+
+        # This will decrease the drawing by 0.5 each time (accumulative)
+        # without passing it through xy
+
+        # if resize:
+        #     drawdots_obj.dots = [(i[0] * 0.5, i[1] * 0.5) for i in drawdots_obj.dots]  # Make the figure twice as small
+        #     resize = False
 
         t += increment
 
