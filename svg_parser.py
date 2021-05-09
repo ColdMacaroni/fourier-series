@@ -96,18 +96,51 @@ def add_xy(coord1, coord2):
 def relative_to_absolute(ls):
     """
     Taking a list generated from sep_commands(), convert
-    the values to absolute ones
+    the values to absolute ones. These include the current point
+    as index 0
     """
+    # ls will look like
+    # [["m", [(0, 0)]], ["c", [(1, 1), (2, 2), (3, 3), (4, 4)]]
+    # ls[0][0] = "m"
+    # ls[0][1] = [(0, 0)]
+    # ls[0][1][0] = (0, 0)
+
     new_ls = []
 
     # Set the current position to the one it was moved to
     if ls[0][0].lower() == "m":
         current = ls[0][1][0]
 
+        # After getting this value, the move part is useless
+        del ls[0]
+
     else:
         current = (0, 0)
 
-    print(current)
+    for i in range(0, len(ls)):
+        # Set the first value to
+        new_coords = [current]
+
+        # lower case are relatives. Upper are absolute
+        if ls[i][0].islower():
+
+            # Add the current value to each coordinate
+            for coord in ls[i][1]:
+                new_coords.append(add_xy(current, coord))
+
+        else:
+            # Item is already absolute, no changes needed
+            new_coords += ls[i][1]
+
+        # Add the new values, including the command char
+        # Command char's case doesnt matter now so it is turned to
+        # lower for ease of use
+        new_ls.append([ls[i][0].lower(), new_coords])
+
+        # Set current to latest coordinate
+        current = new_ls[i][1][-1]
+
+    return new_ls
 
 
 def separate_points(sep_ls):
@@ -133,6 +166,7 @@ def separate_points(sep_ls):
         "s": 2,  # Smooth cubic bezier
 
         "q": 2,  # Quadratic bezier
+        "t": 1,  # Smooth quadratic bezier
     }
 
     new_ls = []
