@@ -132,8 +132,6 @@ def normalize_coords(pts):
     min_x = min(x_points)
     max_x = min_x + distance
 
-    print(min_x, max_x)
-
     for x in x_points:
         new_x.append((x-min_x)/(max_x-min_x))
 
@@ -213,12 +211,8 @@ def main():
     # Move it to 0, 0
     points = [(coord[0] - 1, coord[1] + 1) for coord in points]
 
-    print(points)
-
     # Convert the coordinates to complex numbers
     complex_points = [coords_to_complex(x) for x in points]
-
-    print([complex_points])
 
     constants = []
     try:
