@@ -17,6 +17,8 @@ def get_d(filename):
     # This doesnt have support for multiple d or paths
     path = soup.find('path')
 
+    # TODO: Concat all found "d"s together
+
     ctrl_points = path.get('d')
 
     return ctrl_points
