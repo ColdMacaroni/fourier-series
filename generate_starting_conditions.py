@@ -120,8 +120,28 @@ def normalize_coords(pts):
     """
     Normalizes a bunch of points
     """
-    distance = get_biggest_range(split_xy(pts))
+    x_points, y_points = split_xy(pts)
+    distance = get_biggest_range(x_points, y_points)
 
+    # Theres probably a better way to do this. Too bad!
+
+    # Start with x values
+    new_x = []
+    min_x = min(x_points)
+    max_x = min_x + distance
+
+    for x in x_points:
+        new_x.append((x-min_x)/(max_x-min_x))
+
+    # Continue with y values
+    new_y = []
+    min_y = min(y_points)
+    max_y = min_y + distance
+
+    for y in y_points:
+        new_y.append((y - min_y) / (max_y - min_y))
+
+    return list(zip(new_x, new_y))
 
 
 
@@ -169,23 +189,25 @@ def main():
     # fourier_series.py file
 
     # Scale the svg
-    try:
-        factor = float(argv[3])
-    except IndexError:
-        factor = float(input("Enter a scale factor for the svg: "))
-
-    except ValueError:
-        print("Make sure the factor is a float. E.g. 0.7")
-        factor = input("Scale factor: ")
+    # try:
+    #     factor = float(argv[3])
+    # except IndexError:
+    #     factor = float(input("Enter a scale factor for the svg: "))
+    #
+    # except ValueError:
+    #     print("Make sure the factor is a float. E.g. 0.7")
+    #     factor = input("Scale factor: ")
 
     # Flip y axis, svgs are upside down for some reason
-    points = [(coord[0] * factor, coord[1] * -factor) for coord in raw_points]
+    points = [(coord[0], coord[1] * -1) for coord in raw_points]
 
     # Normalize points
     points = normalize_coords(points)
 
     # Move it to 0, 0
-    points = move_to_target(points)
+    # points = move_to_target(points)
+
+    print(points)
 
     # Convert the coordinates to complex numbers
     complex_points = [coords_to_complex(x) for x in points]
