@@ -24,7 +24,7 @@ def get_d(filename):
 
 def tuplify_coords(ls):
     """
-    Converts strings like "0.4,-34" to (0.4, -34)
+    Converts strings like "print(processed_list)0.4,-34" to (0.4, -34)
     """
     # Processed items will go in here
     new_ls = []
@@ -37,13 +37,20 @@ def tuplify_coords(ls):
 
         # Convert to tuple
         else:
-            x, y = item.split(",")
+            try:
+                x, y = item.split(",")
 
-            # Convert to a tuple with actual nums
-            coordinate = float(x.strip()), float(y.strip())
+                # Convert to a tuple with actual nums
+                coordinate = float(x.strip()), float(y.strip())
+
+            # There will be a value error if the item is just a number
+            # without commas
+            # This will happen when the value is from a horizontal or
+            # vertical lineto
+            except ValueError:
+                coordinate = float(item.strip())
 
             new_ls.append(coordinate)
-
     return new_ls
 
 
@@ -51,9 +58,9 @@ def main(filename):
     # Get the content of d
     d_markers = get_d(filename)
 
+    # Convert d to actual, usable data types
     processed_list = tuplify_coords(d_markers)
 
-    print(processed_list)
 
 
 
