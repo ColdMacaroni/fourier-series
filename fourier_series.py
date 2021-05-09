@@ -11,10 +11,51 @@ import random
 
 class FirstArm:
 
-    def __init__(self, screen=any, color=(255, 0, 0), counter=int,
-                 increment=float, radius=int, constant=int, start_angle=0,
+    def __init__(self, screen, color=(255, 0, 0), counter=0,
+                 increment=0, radius=50, constant=1, start_angle=0,
                  image_rot=0, line_color=(0, 0, 0), show_radii=True,
-                 show_circumpferences=True):
+                 show_circumferences=True):
+        """Creates a FirstArm object
+
+        Args:
+            screen (PyGame Screen variable): Variable for determining the
+            Pygame window the arms are drawn on.
+
+            color (tuple, optional): Determins the color of the arm in RGB
+            form.
+            Defaults to Red (255, 0, 0).
+
+            counter (int, optional): I have no clue.
+            Defaults to 0.
+
+            increment (float): [description]. Defaults to 0.
+
+            radius (float, optional): the length of the arm in px.
+            Defaults to 50.
+
+            constant (float, optional): .
+            Defaults to 1.
+
+            start_angle (int, optional): teh angle the arm starts at
+            (in degrees).
+            Defaults to 0.
+
+            image_rot (int, optional): the amount you want to rotate the
+            whole image by (in degrees).
+            Defaults to 0.
+
+            line_color (tuple, optional): Color of the line created in RGB
+            form.
+            Defaults to black (0, 0, 0).
+
+            show_radii (bool, optional): whether or not teh arms themselves
+            will be shown.
+            Defaults to True.
+
+            show_circumferences (bool, optional): whether or not the
+            circumferences of this arm and all children arms will be shown.
+            Defaults to True.
+        """
         self.color = color
         self.screen = screen
         self.counter = counter
@@ -26,7 +67,7 @@ class FirstArm:
         self.image_rot = deg_to_rads(image_rot)
         self.line_color = line_color
         self.show_radii = show_radii
-        self.show_circumpferences = show_circumpferences
+        self.show_circumpferences = show_circumferences
 
 
         self.children = []
@@ -35,6 +76,8 @@ class FirstArm:
         self.new_y = {}
 
     def update(self):
+        """Updates this arm and all child arms
+        """
         self.new_x[1], self.new_y[1] = draw_radius(self.screen,
                                                    (255, 0, 0), xy(0, 0),
                                                    self.radius,
@@ -58,11 +101,34 @@ class FirstArm:
 
 class arm:
 
-    def __init__(self, parent, radius, dp, id, last, constant,
-                 color=(random.randint(0, 256),
-                        random.randint(0, 256),
-                        random.randint(0, 256)),
-                 start_angle=0):
+    def __init__(self, parent, radius=50, dp=2, id=1, last=False, constant=1,
+                 color=(255, 0, 0), start_angle=0):
+        """[summary]
+
+        Args:
+            parent (FirstArm): Parent object of this arm must be a first arm.
+
+            radius (int, optional): the length of the arm.
+            Defaults to 50.
+
+            dp (int, optional): Decimal places to round to.
+            Defaults to 2.
+
+            id (int, optional): Id of this arm minimum of 1.
+            Defaults to 1.
+
+            last (bool, optional): Is this the last arm of the chain.
+            Defaults to False.
+
+            constant (int, optional): The rotational constant of this arm.
+            Defaults to 1.
+
+            color (tuple, optional): Color of this arm.
+            Defaults to Red (255, 0, 0).
+
+            start_angle (int, optional): Angle this arm starts at(in degrees).
+            Defaults to 0.
+        """
         self.parent = parent
         self.radius = radius
         self.id = id
@@ -75,6 +141,8 @@ class arm:
         self.start_angle = deg_to_rads(start_angle)
 
     def update(self):
+        """Updates this arm
+        """
         new_x = self.parent.new_x
         new_y = self.parent.new_y
         id = self.id
@@ -107,18 +175,43 @@ class arm:
                     pygame.draw.line(self.parent.screen, self.parent.line_color, xy(*dot), xy(*self.next))
 
 
-def units_to_pixels(units):
+def units_to_pixels(units) -> int:
+    """Converts given units to pixels
+    each units is equal to 50 pixels
+
+    Args:
+        units (int): The amount of units to convert to pixels
+
+    Returns:
+        int: the amount of pixels converted from given amount of units
+    """
     pixels = 50*units
     return pixels
 
 
-def deg_to_rads(degs):
+def deg_to_rads(degs) -> float:
+    """Converts a given amount of degrees to radians
+
+    Args:
+        degs (float): a given amount of degrees
+
+    Returns:
+        float: the amount of degrees converted to radians
+    """
     rads = (math.pi/180) * degs
     print(rads)
     return rads
 
 
-def rads_to_degs(rads):
+def rads_to_degs(rads) -> float:
+    """Converts radians to degrees
+
+    Args:
+        rads (float): a given amount of radians
+
+    Returns:
+        float: the amount of radians converted to degreesx
+    """
     degs = 180/math.pi * rads
     return degs
 
@@ -250,7 +343,7 @@ def main():
     arm0 = FirstArm(screen=screen, color=color, counter=counter,
                     increment=increment, radius=200, constant=1,
                     start_angle=0, image_rot=90, line_color=(100, 0, 60),
-                    show_circumpferences=True, show_radii=True)
+                    show_circumferences=True, show_radii=True)
     arm1 = arm(arm0, radius=100, dp=dp, id=1, last=False, constant=2,
                start_angle=0)
     arm2 = arm(arm0, radius=100, dp=dp, id=2, last=True, constant=-2,
@@ -275,7 +368,6 @@ def main():
 
         # Circles
         arm0.update()
-        # arm4.update()
 
 
         # print(len(dots))
