@@ -58,7 +58,7 @@ def integral(pts, n):
     return c
 
 
-def write_complex(num):
+def write_complex(num, filename):
     with open(filename, 'a') as file:
         if num.imag < 0:
             line = "{}{}j".format(num.real, num.imag)
@@ -96,99 +96,105 @@ def move_to_target(pts, target=(0, 0)):
 
     return list(zip(new_x, new_y))
 
+
 # TODO: Put all this into functions
 # TODO: Normalize values
-try:
-    filename = argv[1]
-except IndexError:
-    filename = input("Filename of svg file: ")
+def main():
+    try:
+        filename = argv[1]
+    except IndexError:
+        filename = input("Filename of svg file: ")
 
-cps = svg_to_readable.main(filename)
+    cps = svg_to_readable.main(filename)
 
-try:
-    # Try to read the increment from args
-    resolution = abs(float(argv[4])) ** -1
+    try:
+        # Try to read the increment from args
+        resolution = abs(float(argv[4])) ** -1
 
-# Sorry for weird formatting, pep8
-except IndexError:
-    resolution = abs(
-        float(
-            input("Enter the resolution. "
-                  "A higher number is better, but slower: ").strip()
-        )
-    ) ** -1
+    # Sorry for weird formatting, pep8
+    except IndexError:
+        resolution = abs(
+            float(
+                input("Enter the resolution. "
+                      "A higher number is better, but slower: ").strip()
+            )
+        ) ** -1
 
-except ValueError:
-    resolution = abs(
-        float(
-            input("Enter the resolution. "
-                  "A higher number is better, but slower. "
-                  "It should be a positive number: ").strip()
-        )
-    ) ** -1
+    except ValueError:
+        resolution = abs(
+            float(
+                input("Enter the resolution. "
+                      "A higher number is better, but slower. "
+                      "It should be a positive number: ").strip()
+            )
+        ) ** -1
 
-# This will sequentially create all points.
-# They'll be one after the other
-raw_points = []
-for cp in cps:
-    raw_points += generate_points(cp, resolution)
+    # This will sequentially create all points.
+    # They'll be one after the other
+    raw_points = []
+    for cp in cps:
+        raw_points += generate_points(cp, resolution)
 
-# NOTE: This will be removed once normalizing values is implemented
-# The size handling and all that should be done form the
-# fourier_series.py file
+    # NOTE: This will be removed once normalizing values is implemented
+    # The size handling and all that should be done form the
+    # fourier_series.py file
 
-# Scale the svg
-try:
-    factor = float(argv[3])
-except IndexError:
-    factor = float(input("Enter a scale factor for the svg: "))
+    # Scale the svg
+    try:
+        factor = float(argv[3])
+    except IndexError:
+        factor = float(input("Enter a scale factor for the svg: "))
 
-except ValueError:
-    print("Make sure the factor is a float. E.g. 0.7")
-    factor = input("Scale factor: ")
+    except ValueError:
+        print("Make sure the factor is a float. E.g. 0.7")
+        factor = input("Scale factor: ")
 
-# Flip y axis, svgs are upside down for some reason
-points = [(coord[0] * factor, coord[1] * -factor) for coord in raw_points]
+    # Flip y axis, svgs are upside down for some reason
+    points = [(coord[0] * factor, coord[1] * -factor) for coord in raw_points]
 
-# Move it to 0, 0
-points = move_to_target(points)
+    # Move it to 0, 0
+    points = move_to_target(points)
 
-# Convert the coordinates to complex numbers
-complex_points = [coords_to_complex(x) for x in points]
+    # Convert the coordinates to complex numbers
+    complex_points = [coords_to_complex(x) for x in points]
 
-constants = []
-try:
-    numbers = int(argv[2])
+    constants = []
+    try:
+        numbers = int(argv[2])
 
-except IndexError:
-    numbers = abs(int(input("Enter the amount of pairs of circles: ")))
+    except IndexError:
+        numbers = abs(int(input("Enter the amount of pairs of circles: ")))
 
-except ValueError:
-    numbers = abs(int(input("Enter the amount of pairs of circles. "
-                            "Must be an integer: ")))
+    except ValueError:
+        numbers = abs(int(input("Enter the amount of pairs of circles. "
+                                "Must be an integer: ")))
 
-for n in range(0, numbers + 1):
-    # Generate the circles
-    constants.append(integral(complex_points, n))
+    for n in range(0, numbers + 1):
+        # Generate the circles
+        constants.append(integral(complex_points, n))
 
-    # Create an "opposite" circle right next to
-    # the current one
-    if n != 0:
-        constants.append(integral(complex_points, n * -1))
+        # Create an "opposite" circle right next to
+        # the current one
+        if n != 0:
+            constants.append(integral(complex_points, n * -1))
 
-# By the end, the values would look like
-# 0
-# 1
-# -1
-# 2
-# -2
-# etc.s
+    # By the end, the values would look like
+    # 0
+    # 1
+    # -1
+    # 2
+    # -2
+    # etc.s
 
-# Clear file
-filename = 'constants'
-with open(filename, 'w') as file:
-    file.write('')
+    # Clear file
+    filename = 'constants'
+    with open(filename, 'w') as file:
+        file.write('')
 
-for i in range(len(constants)):
-    print(i, constants[i])
-    write_complex(constants[i])
+    for i in range(len(constants)):
+        print(i, constants[i])
+        write_complex(constants[i], filename)
+
+
+if __name__ == "__main__":
+    main()
