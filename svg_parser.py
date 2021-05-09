@@ -316,7 +316,6 @@ def main(filename):
 
     increment = pow(resolution, -1)
     for command in absolute_list:
-        print(command)
         # Get relevant equation
         eq, args = command
 
