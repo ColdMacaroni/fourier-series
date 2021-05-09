@@ -83,7 +83,6 @@ def sep_commands(ls):
                 new_ls.append(to_append)
                 last = i
 
-    print(new_ls, "sep_commands")
     return new_ls
 
 
@@ -92,6 +91,7 @@ def add_xy(coord1, coord2):
     Add two coordinates together
     """
     return coord1[0] + coord2[0], coord1[1] + coord2[1]
+
 
 def relative_to_absolute(ls):
     """
@@ -138,14 +138,16 @@ def separate_points(sep_ls):
     new_ls = []
     for item in sep_ls:
         com = item[0].lower()
-        start = coms[com]
-        for i in range(1, len(item), coms[com]):
-            # Do this to avoid appending empty lists
-            to_append = item[start:i]
-            if to_append:
-                new_ls.append([item[0], to_append])
 
-            start = i
+        # Start is one to avoid the command character
+        start = 1
+        # Get sections of length coms[com]
+        for i in range(0, (len(item) - 1) // coms[com]):
+            to_append = item[start: start + coms[com]]
+
+            new_ls.append([item[0], to_append])
+
+            start += coms[com]
 
     return new_ls
 
