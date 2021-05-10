@@ -15,11 +15,12 @@ def get_d(filename):
     soup = bs.BeautifulSoup(source, 'xml')
 
     # This doesnt have support for multiple d or paths
-    path = soup.find('path')
 
-    # TODO: Concat all found "d"s together
+    paths = soup.findAll('path')
 
-    ctrl_points = path.get('d')
+    ctrl_points = []
+    for path in paths:
+        ctrl_points.append(path.get('d'))
 
     return ctrl_points
 
@@ -108,6 +109,9 @@ def relative_to_absolute(ls):
     # ls[0][1][0] = (0, 0)
 
     new_ls = []
+
+    print(ls)
+    print()
 
     # Set the current position to the one it was moved to
     if ls[0][0].lower() == "m":
@@ -215,6 +219,7 @@ def cubic_bezier(arg_points, t):
     """
     coords = []
     p0, p1, p2, p3 = arg_points
+
     # for x and then y
     for i in [0, 1]:
         # Equation from
@@ -262,24 +267,32 @@ def not_supported(*args):
 
 def main(filename, resolution):
     # Get the content of d
-    d_markers = get_d(filename)
+    all_d_points = get_d(filename)
 
-    # Hehe
-    d_list = list_d(d_markers)
+    abs_points = []
+    for d_markers in all_d_points:
+        # Hehe
+        d_list = list_d(d_markers)
 
-    # Group per command type
-    separated_list = sep_commands(d_list)
+        # Group per command type
+        separated_list = sep_commands(d_list)
 
-    # Convert coordinates to tuples
-    processed_list = tuplify_d(separated_list)
+        # Convert coordinates to tuples
+        processed_list = tuplify_d(separated_list)
 
-    # Convert shorthand commands to full ones
-    command_list = separate_points(processed_list)
+        # Convert shorthand commands to full ones
+        command_list = separate_points(processed_list)
 
-    # Convert relative values to absolute ones
-    absolute_list = relative_to_absolute(command_list)
+        # Convert relative values to absolute ones
+        absolute_list = relative_to_absolute(command_list)
 
-    # -- Start getting points. This could be a different file but
+        abs_points.append(absolute_list)
+
+    all_points = []
+    for control_points in abs_points:
+        for control_point in control_points:
+            all_points.append(control_point)
+
     # im tired
 
     # If i want to support s or t, id have to make a function to
@@ -308,7 +321,7 @@ def main(filename, resolution):
     points = []
 
     increment = pow(resolution, -1)
-    for command in absolute_list:
+    for command in all_points:
         # Get relevant equation
         eq, args = command
 
