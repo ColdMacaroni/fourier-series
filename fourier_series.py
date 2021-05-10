@@ -420,7 +420,7 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
     # Start making objects
     circles = []
     for const in range(0, len(constants)):
-        circles.append(Circle(screen, constants[const], nums[const], show_circumference=False))
+        circles.append(Circle(screen, constants[const], nums[const], show_circumference=False, r_stroke=2))
 
     # Reverse the list for attaching
     circles.reverse()
