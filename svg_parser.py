@@ -65,7 +65,7 @@ def tuplify_d(ls):
         new_item = [item[0]]
 
         # There is probably a better way to do this but my brain power
-        # has gone into the imaginary plan. (It's not real)
+        # has gone into the imaginary plane. (It's not real)
         if new_item[0].lower() == "h":
             for pos in range(1, len(item)):
                 coord = (item[pos], 0)
@@ -152,6 +152,35 @@ def relative_to_absolute(ls):
         # Relative
         elif ls[i][0] == "m":
             current = add_xy(current, ls[i][1][0])
+
+        # Hh/Vv also requires special handling
+        # It will convert the command to a Lineto instead
+        elif ls[i][0].lower() in ["h", "v"]:
+            new_coords = [current]
+
+            # Horizontals (x, 0)
+            if ls[i][0] == "H":
+                # Yes, a 4D list. I couldnt think of anything else
+                # its accessing the x value of the horizontal line
+
+                # Replace the y value for the current one
+                coord = (ls[i][1][0][0], current[1])
+
+            elif ls[i][0] == "V":
+                # Replace x for current one
+                coord = (current[0], ls[i][1][0][1])
+
+            else:
+                # Replace the 0 value AND make specified absolute
+                coord = (add_xy(ls[i][1][0], current))
+            # Verticals (0, y)
+
+            new_coords.append(coord)
+
+            new_ls.append(['l', new_coords])
+
+            # Set current to latest coordinate
+            current = new_ls[-1][1][-1]
 
         else:
             # Set the first value to
