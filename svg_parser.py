@@ -140,49 +140,38 @@ def relative_to_absolute(ls):
     print(ls)
     print()
 
-    #
-    # # Set the current position to the one it was moved to
-    # if ls[0][0].lower() == "m":
-    #     current = ls[0][1][0]
-    #
-    #     # After getting this value, the move part is useless
-    #     del ls[0]
+    # Set the current position to the one it was moved to
+    if ls[0][0].lower() == "m":
+        current = ls[0][1][0]
 
-    current = (0, 0)
+        # After getting this value, the move part is useless
+        del ls[0]
+
+    else:
+        current = (0, 0)
 
     for i in range(0, len(ls)):
-        # M/m requires special handling
-        # If the move is absolute
-        if ls[i][0] == "M":
-            # Set coords for the point it was moved to
-            current = ls[i][1][0]
+        # Set the first value to
+        new_coords = [current]
 
-        # Relative
-        elif ls[i][0] == "m":
-            current = add_xy(current, ls[i][1][0])
+        # lower case are relatives. Upper are absolute
+        if ls[i][0].islower():
+
+            # Add the current value to each coordinate
+            for coord in ls[i][1]:
+                new_coords.append(add_xy(current, coord))
 
         else:
-            # Set the first value to
-            new_coords = [current]
+            # Item is already absolute, no changes needed
+            new_coords += ls[i][1]
 
-            # lower case are relatives. Upper are absolute
-            if ls[i][0].islower():
+        # Add the new values, including the command char
+        # Command char's case doesnt matter now so it is turned to
+        # lower for ease of use
+        new_ls.append([ls[i][0].lower(), new_coords])
 
-                # Add the current value to each coordinate
-                for coord in ls[i][1]:
-                    new_coords.append(add_xy(current, coord))
-
-            else:
-                # Item is already absolute, no changes needed
-                new_coords += ls[i][1]
-
-            # Add the new values, including the command char
-            # Command char's case doesnt matter now so it is turned to
-            # lower for ease of use
-            new_ls.append([ls[i][0].lower(), new_coords])
-
-            # Set current to latest coordinate
-            current = new_ls[-1][1][-1]
+        # Set current to latest coordinate
+        current = new_ls[i][1][-1]
 
     return new_ls
 
@@ -293,7 +282,6 @@ def quadratic_bezier(arg_points, t):
     return tuple(coords)
 
 # --
-
 
 def not_supported(*args):
     """
