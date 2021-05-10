@@ -61,31 +61,23 @@ def tuplify_d(ls):
 
     new_ls = []
     for item in ls:
-        # Horizontal and vertical need special handling
-        if item[0].lower() == "h":
-            if item[0].isupper():
-                new_item = ["L"]
+        print(item)
+        new_item = [item[0]]
 
-            else:
-                new_item = ["l"]
+        # There is probably a better way to do this but my brain power
+        # has gone into the imaginary plan. (It's not real)
+        if new_item[0].lower() == "h":
+            for pos in range(1, len(item)):
+                coord = (item[pos], 0)
+                new_item.append(coord)
 
-            new_coords = [item[1][0], 0]
-
-            new_item.append(new_coords)
-
-        elif item[0].lower() == "v":
-            if item[0].isupper():
-                new_item = ["L"]
-
-            else:
-                new_item = ["l"]
-
-            new_coords = [0, item[1][0]]
-
-            new_item.append(new_coords)
+        elif new_item[0].lower() == "v":
+            for pos in range(1, len(item)):
+                coord = (0, item[pos])
+                new_item.append(coord)
 
         else:
-            new_item = [item[0]]
+            # Horizontal and vertical need special handling
             # Go 2 by 2 to add the coords together
             for pos in range(1, len(item), 2):
                 # Convert to tuple
@@ -140,38 +132,49 @@ def relative_to_absolute(ls):
     print(ls)
     print()
 
-    # Set the current position to the one it was moved to
-    if ls[0][0].lower() == "m":
-        current = ls[0][1][0]
+    #
+    # # Set the current position to the one it was moved to
+    # if ls[0][0].lower() == "m":
+    #     current = ls[0][1][0]
+    #
+    #     # After getting this value, the move part is useless
+    #     del ls[0]
 
-        # After getting this value, the move part is useless
-        del ls[0]
-
-    else:
-        current = (0, 0)
+    current = (0, 0)
 
     for i in range(0, len(ls)):
-        # Set the first value to
-        new_coords = [current]
+        # M/m requires special handling
+        # If the move is absolute
+        if ls[i][0] == "M":
+            # Set coords for the point it was moved to
+            current = ls[i][1][0]
 
-        # lower case are relatives. Upper are absolute
-        if ls[i][0].islower():
-
-            # Add the current value to each coordinate
-            for coord in ls[i][1]:
-                new_coords.append(add_xy(current, coord))
+        # Relative
+        elif ls[i][0] == "m":
+            current = add_xy(current, ls[i][1][0])
 
         else:
-            # Item is already absolute, no changes needed
-            new_coords += ls[i][1]
+            # Set the first value to
+            new_coords = [current]
 
-        # Add the new values, including the command char
-        # Command char's case doesnt matter now so it is turned to
-        # lower for ease of use
-        new_ls.append([ls[i][0].lower(), new_coords])
+            # lower case are relatives. Upper are absolute
+            if ls[i][0].islower():
 
-        # Set current to latest coordinate
-        current = new_ls[i][1][-1]
+                # Add the current value to each coordinate
+                for coord in ls[i][1]:
+                    new_coords.append(add_xy(current, coord))
+
+            else:
+                # Item is already absolute, no changes needed
+                new_coords += ls[i][1]
+
+            # Add the new values, including the command char
+            # Command char's case doesnt matter now so it is turned to
+            # lower for ease of use
+            new_ls.append([ls[i][0].lower(), new_coords])
+
+            # Set current to latest coordinate
+            current = new_ls[-1][1][-1]
 
     return new_ls
 
@@ -204,6 +207,10 @@ def separate_points(sep_ls):
 
     new_ls = []
     for item in sep_ls:
+        # Z doesnt really matter!
+        if item[0].lower() == "z":
+            continue
+
         com = item[0].lower()
 
         # Start is one to avoid the command character
@@ -282,6 +289,7 @@ def quadratic_bezier(arg_points, t):
     return tuple(coords)
 
 # --
+
 
 def not_supported(*args):
     """
