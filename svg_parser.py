@@ -61,7 +61,6 @@ def tuplify_d(ls):
 
     new_ls = []
     for item in ls:
-        print(item)
         new_item = [item[0]]
 
         # There is probably a better way to do this but my brain power
@@ -128,9 +127,6 @@ def relative_to_absolute(ls):
     # ls[0][1][0] = (0, 0)
 
     new_ls = []
-
-    print(ls)
-    print()
 
     #
     # # Set the current position to the one it was moved to
