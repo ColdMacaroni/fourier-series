@@ -453,7 +453,7 @@ def main():
     circle, drawdots_obj = create_circles(screen, "constants", draw=True)
 
     # This value will increase by increment each loop
-    increment = 0.001
+    increment = 0.0005
     t = 0
 
     # TODO: Add shortcuts to pygame window to edit runtime stuff
