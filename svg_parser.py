@@ -55,16 +55,43 @@ def tuplify_d(ls):
     Convert a list given by sep_commands into using coordinates
     in tuples instead of standalone
     """
+
+    # horiz = lambda x: ['l', [(x, 0)]]
+    # verti = lambda y: ['l', [(0, y)]]
+
     new_ls = []
     for item in ls:
-        new_item = [item[0]]
+        # Horizontal and vertical need special handling
+        if item[0].lower() == "h":
+            if item[0].isupper():
+                new_item = ["L"]
 
-        # Go 2 by 2 to add the coords together
-        for pos in range(1, len(item), 2):
-            # Convert to tuple
-            coord = item[pos], item[pos + 1]
+            else:
+                new_item = ["l"]
 
-            new_item.append(coord)
+            new_coords = [item[1][0], 0]
+
+            new_item.append(new_coords)
+
+        elif item[0].lower() == "v":
+            if item[0].isupper():
+                new_item = ["L"]
+
+            else:
+                new_item = ["l"]
+
+            new_coords = [0, item[1][0]]
+
+            new_item.append(new_coords)
+
+        else:
+            new_item = [item[0]]
+            # Go 2 by 2 to add the coords together
+            for pos in range(1, len(item), 2):
+                # Convert to tuple
+                coord = item[pos], item[pos + 1]
+
+                new_item.append(coord)
 
         new_ls.append(new_item)
     return new_ls
