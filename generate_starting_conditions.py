@@ -5,6 +5,7 @@ import time
 from sys import argv
 import svg_parser
 
+TIME_TO_TIMEOUT_S = 60
 
 def integral(pts, n):
     new_pts = []
@@ -166,7 +167,7 @@ def main():
         # the current one
         if n != 0:
             constants.append(integral(complex_points, n * -1))
-        if (timeout_time := time.time() - start_time) >= 60:
+        if (timeout_time := time.time() - start_time) >= TIME_TO_TIMEOUT_S:
             print(f'timed out after {timeout_time*100:.7f}ms')
             break
     final_time = time.time() - start_time
