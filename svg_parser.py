@@ -33,8 +33,21 @@ def list_d(ls):
     new_ls = []
 
     # Support for when the coordinates are divided by commas
-    ls = ls.replace(",", " ")
-    items = ls.split(" ")
+    # Z's are useless! (for our purpose)
+    ls = ls.replace(",", " ").replace("z", "").replace("Z", "")
+    items = list(ls)
+
+    # "M0" -> "M 0"
+    spaced_items = []
+
+    # Add a space after each letter
+    for item in items:
+        spaced_items.append(item)
+        if item.isalpha():
+            spaced_items.append(" ")
+
+    # Join and then split again to remove duplicate spaces
+    items = ''.join(spaced_items).split()
 
     for item in items:
         # Leave string items as they are
