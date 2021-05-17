@@ -127,15 +127,27 @@ def main():
     resolution = 40
 
     try:
-        resolution = float(argv[2])
+        resolution = float(argv[3])
 
     except IndexError:
         resolution = float(input("Enter a resolution, the higher the better: ").strip())
 
     raw_points = svg_parser.main(svg_filename, resolution)
 
+    to_flip = True
+    flip = 1
+    try:
+        to_flip = True if argv[2][0].lower() in ['y', 't', '1'] else False
+
+    except IndexError:
+        to_flip = True if input("Flip? ")[0].lower() in ['y', 't', '1']\
+            else False
+
+    if to_flip:
+        flip = -1
+
     # Flip y axis, svgs are upside down for some reason
-    points = [(coord[0], coord[1] * -1) for coord in raw_points]
+    points = [(coord[0], coord[1] * flip) for coord in raw_points]
 
     # Normalize points
     points = normalize_coords(points)
@@ -148,7 +160,7 @@ def main():
 
     constants = []
     try:
-        numbers = int(argv[2])
+        numbers = int(argv[4])
 
     except IndexError:
         numbers = abs(int(input("Enter the amount of pairs of circles: ")))

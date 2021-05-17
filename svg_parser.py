@@ -388,8 +388,6 @@ def main(filename, resolution):
         "t": not_supported,
     }
 
-
-
     # Start calculating values
     points = []
 
