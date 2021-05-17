@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # Generate starting sequences for fourier series
 import math
+import time
 from sys import argv
 import svg_parser
 
+TIME_TO_TIMEOUT_S = 60
 
 def integral(pts, n):
     new_pts = []
@@ -168,7 +170,7 @@ def main():
     except ValueError:
         numbers = abs(int(input("Enter the amount of pairs of circles. "
                                 "Must be an integer: ")))
-
+    start_time = time.time()
     for n in range(0, numbers + 1):
         # Generate the circles
         constants.append(integral(complex_points, n))
@@ -177,6 +179,11 @@ def main():
         # the current one
         if n != 0:
             constants.append(integral(complex_points, n * -1))
+        if (timeout_time := time.time() - start_time) >= TIME_TO_TIMEOUT_S:
+            print(f'timed out after {timeout_time*100:.7f}ms')
+            break
+    final_time = time.time() - start_time
+    print(f'Circles created in {final_time*100:.7f}ms')
 
     # By the end, the values would look like
     # 0
