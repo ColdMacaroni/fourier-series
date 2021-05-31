@@ -271,6 +271,46 @@ def separate_points(sep_ls):
     return new_ls
 
 
+def implicit_lineto(ls):
+    """
+    https://www.w3.org/TR/SVG/paths.html#PathDataMovetoCommands
+    Convert extra sets of coordinates in moveto commands to
+    lineto commands
+
+    Multiple coords in line to commands are treated as implicit
+    lineto (l / L) commands, the usual upper and lower case
+    nonsense applies. m -> l, M -> L
+    """
+    # The first item will be replaced by the new items
+    item = ls.pop(0)
+
+    new_items = []
+
+    # Get the inital one
+    new_items.append(item[:2])
+
+    # -- Add another item if there is more than one set of coords in
+    #    the move commands
+    # If [0][0] is m and the len of [0] > 2,
+    # [m, (1,2), (4,5), (7,8)] -> [m, (1, 2)], [l, (4,5), (7,8)]
+    if (item[0].lower() == 'm' and
+        len(item) > 2):
+        # Store the extra coordinates in a temporary var
+        temp_item = item[2:]
+
+        # Put appropiate line to command at the start
+        temp_item.insert(0,
+            'L' if item[0].isupper() else 'l'
+        )
+
+        new_items.append(temp_item)
+
+    # Add back the first items
+    new_ls = new_items + ls
+
+    return new_ls
+
+
 # -- Equations -- #
 def line(arg_points, t):
     """
@@ -357,7 +397,13 @@ def main(filename, resolution):
         separated_list = sep_commands(d_list)
 
         # Convert coordinates to tuples
-        processed_list = tuplify_d(separated_list)
+        tupled_list = tuplify_d(separated_list)
+
+
+        # Change multiple moveto coords to linetos
+        # See docstring for more info
+        processed_list = implicit_lineto(tupled_list)
+
 
         # Convert shorthand commands to full ones
         command_list = separate_points(processed_list)
