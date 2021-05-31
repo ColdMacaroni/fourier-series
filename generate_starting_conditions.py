@@ -172,6 +172,7 @@ def main():
                                 "Must be an integer: ")))
 
     TIME_TO_TIMEOUT_S = 60
+
     start_time = time.time()
     for n in range(0, numbers + 1):
         # Generate the circles
