@@ -112,10 +112,17 @@ def sep_commands(ls):
         # section to the new list
         if isinstance(ls[i], str):
             to_append = ls[last:i]
+
             # Only add if the list is not empty
             if to_append:
                 new_ls.append(to_append)
                 last = i
+
+    # The last to_append doesnt usually get added at the end of the loop
+    # unless the last item is a char
+    # In case it does, the if should stop repeats hopefully
+    if ls[last:i] != new_ls[-1]:
+        new_ls.append(ls[last:i + 1])
 
     return new_ls
 
