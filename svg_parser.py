@@ -291,7 +291,6 @@ def line(arg_points, t):
     return tuple(coords)
 
 
-# NOTE: NOT TESTED!!
 def cubic_bezier(arg_points, t):
     """
     Returns the point according to t
@@ -341,7 +340,7 @@ def not_supported(*args):
     Sorry!!
     """
     raise Exception('Sorry!! There is not support for this '
-                    'svg command yet!! Please create an '
+                    f'svg command yet!! ({args[0]}) Please create an '
                     'issue on github.')
 
 
