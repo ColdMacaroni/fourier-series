@@ -263,6 +263,9 @@ class DrawDots:
         if self.dots is None:
             self.dots = []
 
+        # This will be used to connect the last and first dots.
+        self.total_dots = len(self.dots)
+
     def append_dot(self, new_dot):
         """
         Adds a dot to the list of dots
@@ -308,19 +311,33 @@ class DrawDots:
         """
         Draws the list of dots and connects them with a line
         """
+        # If this isnt done, there will be a line connecting the first
+        # and last dots constantly. True == 1, False == 0
+        if self.total_dots == len(self.dots):
+            connect = True
+
+        else:
+            # Update the dots
+            self.total_dots = len(self.dots)
+            connect = False
+
         # Do not draw line if there is only one dot
         if len(self.dots) == 1:
             self.draw_dot(self.dots[0])
 
         else:
-            for dot in range(len(self.dots)-1):
+            # Draw all dots
+            for dot in range(len(self.dots) - 1):
                 if self.show_line:
                     self.draw_line(self.dots[dot], self.dots[dot+1])
 
                 if self.show_dot:
                     self.draw_dot(self.dots[dot])
-
             del dot
+
+            # Connect first and last dots
+            if connect and self.show_line:
+                self.draw_line(self.dots[-1], self.dots[0])
 
 
 def i_xy(num):
