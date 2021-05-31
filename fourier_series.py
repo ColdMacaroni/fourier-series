@@ -7,6 +7,36 @@ import pygame
 import math
 from sys import argv
 
+import time
+
+
+
+class args:
+    OPTS = {}
+    def __init__(self, arg, opt_command) -> None:
+        self.arg = arg
+        self.command = opt_command
+
+    def get_args():
+        opts_args = argv[1:]
+        options = {}
+        arguments = {}
+        for opt_arg in opts_args:
+            if opt_arg[0] == '-':
+                options[opts_args.index(opt_arg)] = opt_arg
+            else:
+                arguments[opts_args.index(opt_arg)] = opt_arg
+
+        opts_with_corresp_args = {}
+        for opt_pos, opt in options.items():
+            for arg_pos, arg in arguments.items():
+                if opt_pos + 1 == arg_pos:
+                    opts_with_corresp_args[opt] = args(arg, opt)
+                    break
+
+        for opt, arg in opts_with_corresp_args:
+            if opt in args.OPTS:
+                pass
 
 class Circle:
     # Values are all normal within calculations.
@@ -323,6 +353,38 @@ class DrawDots:
             del dot
 
 
+class Transform:
+    def setup(circles, dots_obj):
+        Transform.circles = circles
+        Transform.dots_obj = dots_obj
+
+    class Zoom:
+        def __init__(self) -> None:
+            self.current_zoom = 1
+
+        def update(self):
+            keys = pygame.key.get_pressed()
+            pressed_keys = []
+            for key, pressed in enumerate(keys):
+                if pressed == 1:
+                    pressed_keys.append(pygame.key.name(key))
+            if 'â' and '.' in pressed_keys:
+                self.zoom_in()
+            elif '-' in pressed_keys:
+                self.zoom_out()
+
+        def zoom_in(self):
+            self.current_zoom = self.current_zoom * 2
+            print('zoomed in')
+
+        def zoom_out(self):
+            self.current_zoom = self.current_zoom / 2
+            print('zoomed out')
+
+    class Pan:
+        pass
+
+
 def i_xy(num):
     """
     turns an imaginary number to x, y coordinates
@@ -422,6 +484,7 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
     for const in range(0, len(constants)):
         circles.append(Circle(screen, constants[const], nums[const], show_circumference=False, r_stroke=1))
 
+
     # Reverse the list for attaching
     circles.reverse()
 
@@ -436,6 +499,7 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
 
     # Return the static circle
     if draw:
+        Transform.setup(circles=circles, dots_obj=dots_obj)
         return circles[-1], dots_obj
 
     else:
@@ -464,7 +528,8 @@ def main():
 
     # Variable used for messing with draw dots obj
     # resize = False
-
+    start_time = time.time()
+    zoom_obj = Transform.Zoom()
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -474,7 +539,6 @@ def main():
         if not 0 <= t <= 1:
             t = 0
             # resize = True
-
         screen.fill(color['white'])
 
         # -- Draw elements -- #
@@ -502,7 +566,9 @@ def main():
         # --
         # Update the circle
         circle.update(t)
-
+        # time_check_div, time_check_mod = divmod((time.time() - start_time))
+        if False:
+            zoom_obj.update()
         # Mess with the DrawDots obj
         # drawdots_obj.dots = []  # This will clear the dots
 
