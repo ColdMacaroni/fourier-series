@@ -293,14 +293,13 @@ def implicit_lineto(ls):
     #    the move commands
     # If [0][0] is m and the len of [0] > 2,
     # [m, (1,2), (4,5), (7,8)] -> [m, (1, 2)], [l, (4,5), (7,8)]
-    if (item[0].lower() == 'm' and
-        len(item) > 2):
+    if item[0].lower() == 'm' and len(item) > 2:
         # Store the extra coordinates in a temporary var
         temp_item = item[2:]
 
         # Put appropiate line to command at the start
-        temp_item.insert(0,
-            'L' if item[0].isupper() else 'l'
+        temp_item.insert(
+            0, 'L' if item[0].isupper() else 'l'
         )
 
         new_items.append(temp_item)
@@ -399,11 +398,9 @@ def main(filename, resolution):
         # Convert coordinates to tuples
         tupled_list = tuplify_d(separated_list)
 
-
         # Change multiple moveto coords to linetos
         # See docstring for more info
         processed_list = implicit_lineto(tupled_list)
-
 
         # Convert shorthand commands to full ones
         command_list = separate_points(processed_list)
@@ -462,13 +459,16 @@ def main(filename, resolution):
 if __name__ == "__main__":
     # A default value
     res = 20
-
+    valid = True
     try:
         res = float(argv[2])
 
-    # PEP 8: E722 do not use bare 'except'
-    # Too bad!
-    except:
-        print("Using", res, "as resolution.")
+    except IndexError:
+        valid = False
+    except ValueError:
+        valid = False
+    finally:
+        if not valid:
+            print("Using", res, "as resolution.")
 
     print(main(argv[1], res))

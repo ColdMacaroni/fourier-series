@@ -63,7 +63,8 @@ class Circle:
 
         # Do some trig to ge the radius
         self.radius = math.sqrt(pow(self.e_result.real - self.origin.real, 2)
-                                + pow(self.e_result.imag - self.origin.imag, 2))
+                                + pow(self.e_result.imag - self.origin.imag, 2)
+                                )
 
         # NOTE: Centre of the circle is parent's equation result
 
@@ -122,7 +123,9 @@ class Circle:
         self.constant * e^(self.pos * 2 * π * 1j * t)
         :return: complex number
         """
-        return self.origin + (self.constant * pow(math.e, (self.pos * 2 * math.pi * 1j * self.t)))
+        return self.origin + (
+            self.constant * pow(math.e, (self.pos * 2 * math.pi * 1j * self.t))
+            )
 
     def update(self, t, new_origin=None):
         """
@@ -409,7 +412,8 @@ def screen_size():
     return 600, 600
 
 
-def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_color=(0, 255, 0)):
+def create_circles(screen, filename, draw=True,
+                   dot_color=(0, 0, 255), line_color=(0, 255, 0)):
     # Read the consts from file
     with open(filename, 'r') as file:
         constants_str = file.readline().replace('\n', '')
@@ -437,7 +441,10 @@ def create_circles(screen, filename, draw=True, dot_color=(0, 0, 255), line_colo
     # Start making objects
     circles = []
     for const in range(0, len(constants)):
-        circles.append(Circle(screen, constants[const], nums[const], show_circumference=False, r_stroke=1))
+        circles.append(Circle(screen, constants[const],
+                              nums[const],
+                              show_circumference=False,
+                              r_stroke=1))
 
     # Reverse the list for attaching
     circles.reverse()
@@ -527,7 +534,9 @@ def main():
         # without passing it through xy
 
         # if resize:
-        #     drawdots_obj.dots = [(i[0] * 0.5, i[1] * 0.5) for i in drawdots_obj.dots]  # Make the figure twice as small
+        #     drawdots_obj.dots = [(i[0] * 0.5, i[1] * 0.5)
+        #                          for i in drawdots_obj.dots]
+        # Make the figure twice as small
         #     resize = False
 
         t += increment

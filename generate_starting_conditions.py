@@ -6,7 +6,6 @@ from sys import argv
 import svg_parser
 
 
-
 def integral(pts, n):
     new_pts = []
 
@@ -132,7 +131,9 @@ def main():
         resolution = float(argv[3])
 
     except IndexError:
-        resolution = float(input("Enter a resolution, the higher the better: ").strip())
+        resolution = float(
+            input("Enter a resolution, the higher the better: ").strip()
+            )
 
     raw_points = svg_parser.main(svg_filename, resolution)
 
@@ -182,9 +183,9 @@ def main():
         # the current one
         if n != 0:
             constants.append(integral(complex_points, n * -1))
-        #if (timeout_time := time.time() - start_time) >= TIME_TO_TIMEOUT_S:
-        #    print(f'timed out after {timeout_time*100:.7f}ms')
-        #    break
+        # if (timeout_time := time.time() - start_time) >= TIME_TO_TIMEOUT_S:
+        #     print(f'timed out after {timeout_time*100:.7f}ms')
+        #     break
     final_time = time.time() - start_time
     print(f'Circles created in {final_time*100:.7f}ms')
 
