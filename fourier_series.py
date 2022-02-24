@@ -271,6 +271,7 @@ class DrawDots:
         self.precision = precision
         self.dots = dots
         self.sin_dots = []
+        self.cos_dots = []
         self.dot_size = dot_size
         self.show_dot = show_dot
         self.show_line = show_line
@@ -296,8 +297,18 @@ class DrawDots:
                     self.sin_dots[i][1]
                 )
             self.sin_dots.append((0, new_dot[1]))
-            if len(self.sin_dots) < 100:
-                self.sin_dots = self.sin_dots[:100]
+
+            for i in range(len(self.cos_dots)):
+                self.cos_dots[i] = (
+                    self.cos_dots[i][0],
+                    self.cos_dots[i][1] + (self.sin_stretch*Circle.unit)
+                )
+            self.cos_dots.append((new_dot[0], 0))
+
+            while len(self.sin_dots) > 1000:
+                del self.sin_dots[0]
+            while len(self.cos_dots) > 1000:
+                del self.cos_dots[0]
 
     def round_dot(self, dot):
         """
@@ -375,9 +386,21 @@ class DrawDots:
                         self.draw_dot(self.sin_dots[dot], "black")
                 del dot
 
-            # Connect first and last dots
-            if connect and self.show_line:
-                self.draw_line(self.dots[-1], self.dots[0])
+            if len(self.cos_dots) == 1:
+                self.draw_dot(self.cos_dots[0])
+
+            else:
+                for dot in range(len(self.cos_dots) - 1):
+                    if self.show_line:
+                        self.draw_line(self.cos_dots[dot], self.cos_dots[dot+1], "black")
+
+                    if self.show_dot:
+                        self.draw_dot(self.cos_dots[dot], "black")
+                del dot
+
+        # Connect first and last dots
+        if connect and self.show_line:
+            self.draw_line(self.dots[-1], self.dots[0])
 
 
 def i_xy(num):
