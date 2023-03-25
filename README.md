@@ -15,4 +15,5 @@ There's a 27% possibility that there's a memory leak somewhere. Idk where im a p
 
 run time customizations coming soon ig
 
-## Contributors [MR-Spagetty](https://github.com/MR-Spagetty)
+## Contributors
+ [MR-Spagetty](https://github.com/MR-Spagetty)
