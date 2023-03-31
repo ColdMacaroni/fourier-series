@@ -4,5 +4,5 @@
 beautifulsoup4
 lxml
 
-# project/fourier_series.py: 6
+# project/fourier_series.py
 pygame
