@@ -14,3 +14,6 @@ e.g. `py fourier_series.py 1.1` This will make it slightly bigger
 There's a 27% possibility that there's a memory leak somewhere. Idk where im a python programer
 
 run time customizations coming soon ig
+
+## Contributors
+ [MR-Spagetty](https://github.com/MR-Spagetty)
