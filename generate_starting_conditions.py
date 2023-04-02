@@ -140,10 +140,11 @@ def main():
     to_flip = True
     flip = 1
     try:
-        to_flip = True if argv[2][0].lower() in ['y', 't', '1'] else False
+        to_flip = True if argv[2][0].lower() in ['y', 'yes', 't', '1']\
+            else False
 
     except IndexError:
-        to_flip = True if input("Flip? ")[0].lower() in ['y', 't', '1']\
+        to_flip = True if input("Flip? ")[0].lower() in ['y', 'yes', 't', '1']\
             else False
 
     if to_flip:
