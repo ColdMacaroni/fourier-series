@@ -107,6 +107,7 @@ def sep_commands(ls):
     """
     new_ls = []
     last = 0
+    i = 0
     for i in range(len(ls)):
         # When it encounters a string, it will add the previous
         # section to the new list
@@ -257,7 +258,7 @@ def separate_points(sep_ls):
         # Start is one to avoid the command character
         start = 1
         # Get sections of length coms[com]
-        for i in range(0, (len(item) - 1) // coms[com]):
+        for _ in range(0, (len(item) - 1) // coms[com]):
             to_append = item[start : start + coms[com]]
 
             new_ls.append([item[0], to_append])
