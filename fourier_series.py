@@ -306,15 +306,16 @@ class DrawDots:
 
         # Keywords
         self.precision = precision
-        self.dots = dots
         self.sin_dots = []
         self.cos_dots = []
         self.dot_size = dot_size
         self.show_dot = show_dot
         self.show_line = show_line
 
-        if self.dots is None:
+        if dots is None:
             self.dots = []
+        else:
+            self.dots = dots
 
         # This will be used to connect the last and first dots.
         self.total_dots = len(self.dots)
@@ -411,7 +412,7 @@ class DrawDots:
 
                 if self.show_dot:
                     self.draw_dot(self.dots[dot])
-            del dot
+
         if self.sin_stretch:
             if len(self.sin_dots) == 1:
                 self.draw_dot(self.sin_dots[0])
@@ -425,7 +426,6 @@ class DrawDots:
 
                     if self.show_dot:
                         self.draw_dot(self.sin_dots[dot], "black")
-                del dot
 
             if len(self.cos_dots) == 1:
                 self.draw_dot(self.cos_dots[0])
@@ -439,7 +439,6 @@ class DrawDots:
 
                     if self.show_dot:
                         self.draw_dot(self.cos_dots[dot], "black")
-                del dot
 
         # Connect first and last dots
         if connect and self.show_line:
@@ -559,31 +558,29 @@ def create_circles(
     circles.reverse()
 
     # Attach a DrawDot object if requested
+    dots_obj = None
     if draw:
         circles[0].attach(DrawDots(screen, dot_color, line_color))
         dots_obj = circles[0].attached_object
+
     # Starting at one so i can attach the *previous* obj to
     # the current one
     for obj in range(1, len(circles)):
         circles[obj].attach(circles[obj - 1])
 
     # Return the static circle
-    if draw:
-        return circles[-1], dots_obj
-
-    else:
-        return circles[-1]
+    return circles[-1], dots_obj
 
 
 def main():
     pygame.init()
 
-    size = width, height = screen_size()
+    size = screen_size()
 
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 
-    circle, drawdots_obj = create_circles(screen, "constants", draw=True)
+    circle, _ = create_circles(screen, "constants", draw=True)
 
     # This value will increase by increment each loop
     increment = 0.0005
