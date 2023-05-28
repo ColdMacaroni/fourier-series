@@ -241,6 +241,17 @@ class Circle:
 
 
 class DrawDots:
+    try:
+        sin_stretch = float(argv[2])  # px
+
+    except ValueError:
+        sin_stretch = float(input("Enter the stretch of the sin wave. 0 for no"
+                                  " wave. Number can be a float: "))
+
+    except IndexError:
+        sin_stretch = float(input("Enter the stretch of the sin wave. 0 for no"
+                                  " wave: "))
+
     def __init__(self, screen, dot_color, line_color,
                  precision=2, dots=None, dot_size=1,
                  show_dot=True, show_line=True):
@@ -260,6 +271,8 @@ class DrawDots:
         # Keywords
         self.precision = precision
         self.dots = dots
+        self.sin_dots = []
+        self.cos_dots = []
         self.dot_size = dot_size
         self.show_dot = show_dot
         self.show_line = show_line
@@ -278,6 +291,25 @@ class DrawDots:
         new_dot = self.round_dot(new_dot)
         if new_dot not in self.dots:
             self.dots.append(new_dot)
+        if self.sin_stretch:
+            for i in range(len(self.sin_dots)):
+                self.sin_dots[i] = (
+                    self.sin_dots[i][0] + (self.sin_stretch*Circle.unit),
+                    self.sin_dots[i][1]
+                )
+            self.sin_dots.append((0, new_dot[1]))
+
+            for i in range(len(self.cos_dots)):
+                self.cos_dots[i] = (
+                    self.cos_dots[i][0],
+                    self.cos_dots[i][1] + (self.sin_stretch*Circle.unit)
+                )
+            self.cos_dots.append((new_dot[0], 0))
+
+            while len(self.sin_dots) > 1000:
+                del self.sin_dots[0]
+            while len(self.cos_dots) > 1000:
+                del self.cos_dots[0]
 
     def round_dot(self, dot):
         """
@@ -305,11 +337,15 @@ class DrawDots:
             self.append_dot(new_coords)
         self.graph()
 
-    def draw_dot(self, dot):
-        pygame.draw.circle(self.screen, self.dot_color, dot, self.dot_size)
+    def draw_dot(self, dot, color=None):
+        if not color:
+            color = self.dot_color
+        pygame.draw.circle(self.screen, color, dot, self.dot_size)
 
-    def draw_line(self, dot1, dot2):
-        pygame.draw.line(self.screen, self.line_color, dot1, dot2)
+    def draw_line(self, dot1, dot2, color=None):
+        if not color:
+            color = self.line_color
+        pygame.draw.line(self.screen, color, dot1, dot2)
 
     def graph(self):
         """
@@ -338,10 +374,34 @@ class DrawDots:
                 if self.show_dot:
                     self.draw_dot(self.dots[dot])
             del dot
+        if self.sin_stretch:
+            if len(self.sin_dots) == 1:
+                self.draw_dot(self.sin_dots[0])
 
-            # Connect first and last dots
-            if connect and self.show_line:
-                self.draw_line(self.dots[-1], self.dots[0])
+            else:
+                for dot in range(len(self.sin_dots) - 1):
+                    if self.show_line:
+                        self.draw_line(self.sin_dots[dot], self.sin_dots[dot+1], "black")
+
+                    if self.show_dot:
+                        self.draw_dot(self.sin_dots[dot], "black")
+                del dot
+
+            if len(self.cos_dots) == 1:
+                self.draw_dot(self.cos_dots[0])
+
+            else:
+                for dot in range(len(self.cos_dots) - 1):
+                    if self.show_line:
+                        self.draw_line(self.cos_dots[dot], self.cos_dots[dot+1], "black")
+
+                    if self.show_dot:
+                        self.draw_dot(self.cos_dots[dot], "black")
+                del dot
+
+        # Connect first and last dots
+        if connect and self.show_line:
+            self.draw_line(self.dots[-1], self.dots[0])
 
 
 def i_xy(num):
