@@ -5,7 +5,8 @@
 
 import pygame
 import math
-from sys import argv
+from sys import argv, setrecursionlimit
+setrecursionlimit(2000)
 
 
 class Circle:
@@ -477,7 +478,7 @@ def main():
     circle, drawdots_obj = create_circles(screen, "constants", draw=True)
 
     # This value will increase by increment each loop
-    increment = 0.001
+    increment = 0.0005
     t = 0
 
     # TODO: Add shortcuts to pygame window to edit runtime stuff
@@ -489,10 +490,14 @@ def main():
     # Variable used for messing with draw dots obj
     # resize = False
 
+    cont = False
     while 1:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    cont = not cont
 
         # Reset t
         if not 0 <= t <= 1:
@@ -504,16 +509,16 @@ def main():
         # -- Draw elements -- #
         # Graph axes
         # X
-        pygame.draw.line(screen,
-                         color['light_gray'],
-                         xy(-width/2, 0),
-                         xy(width/2, 0))
+        #pygame.draw.line(screen,
+        #                 color['light_gray'],
+        #                 xy(-width/2, 0),
+        #                 xy(width/2, 0))
 
         # Y
-        pygame.draw.line(screen,
-                         color['light_gray'],
-                         xy(0, height/2),
-                         xy(0, -height/2))
+        #pygame.draw.line(screen,
+        #                 color['light_gray'],
+        #                 xy(0, height/2),
+        #                 xy(0, -height/2))
 
         # pygame.draw.line(screen,
         #                  color['light_gray'],
@@ -539,7 +544,8 @@ def main():
         # Make the figure twice as small
         #     resize = False
 
-        t += increment
+        if cont:
+            t += increment
 
         pygame.display.flip()
         clock.tick(120)
