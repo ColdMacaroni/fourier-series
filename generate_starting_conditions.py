@@ -181,8 +181,6 @@ def main():
             )
         )
 
-    TIME_TO_TIMEOUT_S = 60
-
     start_time = time.time()
     for n in range(0, numbers + 1):
         # Generate the circles
@@ -212,7 +210,7 @@ def main():
         file.write("")
 
     for i in range(len(constants)):
-        print(i, constants[i])
+        # print(i, constants[i])
         write_complex(constants[i], writing_filename)
 
 
