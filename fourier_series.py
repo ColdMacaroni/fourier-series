@@ -6,6 +6,7 @@
 import pygame
 import math
 from sys import argv, setrecursionlimit
+
 setrecursionlimit(2000)
 
 
@@ -16,18 +17,27 @@ class Circle:
         unit = float(argv[1])  # px
 
     except ValueError:
-        unit = float(input("Enter the value of 1 unit. "
-                           "Number can be a float: "))
+        unit = float(
+            input("Enter the value of 1 unit. " "Number can be a float: ")
+        )
 
     except IndexError:
         unit = float(input("Enter the value of 1 unit: "))
 
     unit /= 10
 
-    def __init__(self, screen, constant, pos,
-                 circle_color=(0, 0, 0), radius_color=(255, 0, 0),
-                 show_circumference=True, show_radius=True,
-                 c_stroke=1, r_stroke=1):
+    def __init__(
+        self,
+        screen,
+        constant,
+        pos,
+        circle_color=(0, 0, 0),
+        radius_color=(255, 0, 0),
+        show_circumference=True,
+        show_radius=True,
+        c_stroke=1,
+        r_stroke=1,
+    ):
         """
         Generate a circle based on c * e^(n * 2 * π * 1j * t)
         :param screen: Pygame screen
@@ -63,9 +73,10 @@ class Circle:
         # --
 
         # Do some trig to ge the radius
-        self.radius = math.sqrt(pow(self.e_result.real - self.origin.real, 2)
-                                + pow(self.e_result.imag - self.origin.imag, 2)
-                                )
+        self.radius = math.sqrt(
+            pow(self.e_result.real - self.origin.real, 2)
+            + pow(self.e_result.imag - self.origin.imag, 2)
+        )
 
         # NOTE: Centre of the circle is parent's equation result
 
@@ -97,8 +108,13 @@ class Circle:
         # point to its own child
 
     # -- Utility methods -- #
-    def config(self, show_circumference=None, show_radius=None,
-               c_stroke=None, r_stroke=None):
+    def config(
+        self,
+        show_circumference=None,
+        show_radius=None,
+        c_stroke=None,
+        r_stroke=None,
+    ):
         """
         Change visibility settings during runtime
         :param show_circumference: Bool
@@ -126,7 +142,7 @@ class Circle:
         """
         return self.origin + (
             self.constant * pow(math.e, (self.pos * 2 * math.pi * 1j * self.t))
-            )
+        )
 
     def update(self, t, new_origin=None):
         """
@@ -160,7 +176,7 @@ class Circle:
         Attaches an object to the end of the radius
         """
         if "update" not in dir(obj):
-            raise Exception('Object must have a .update() method')
+            raise Exception("Object must have a .update() method")
 
         else:
             self.attached_object = obj
@@ -180,7 +196,7 @@ class Circle:
             # This is done to avoid multiple method calls
             self.e_result = self.equation()
         else:
-            raise ValueError('t must be between 0 and 1 (inclusive)')
+            raise ValueError("t must be between 0 and 1 (inclusive)")
 
     def get_radian(self):
         """
@@ -210,11 +226,13 @@ class Circle:
         # Get coordinates at circumference
         pt = self.e_result
 
-        pygame.draw.line(self.screen,
-                         self.radius_color,
-                         self.pygame_coords(self.origin),
-                         self.pygame_coords(pt),
-                         width=self.r_stroke)
+        pygame.draw.line(
+            self.screen,
+            self.radius_color,
+            self.pygame_coords(self.origin),
+            self.pygame_coords(pt),
+            width=self.r_stroke,
+        )
 
     def draw_circumference(self):
         """
@@ -235,9 +253,14 @@ class Circle:
         rect = pygame.Rect((x, y), (width, height))
 
         # -- Draw the circle
-        pygame.draw.arc(self.screen,
-                        self.circle_color,
-                        rect, 0, 2 * math.pi, width=self.c_stroke)
+        pygame.draw.arc(
+            self.screen,
+            self.circle_color,
+            rect,
+            0,
+            2 * math.pi,
+            width=self.c_stroke,
+        )
 
 
 class DrawDots:
@@ -245,16 +268,29 @@ class DrawDots:
         sin_stretch = float(argv[2])  # px
 
     except ValueError:
-        sin_stretch = float(input("Enter the stretch of the sin wave. 0 for no"
-                                  " wave. Number can be a float: "))
+        sin_stretch = float(
+            input(
+                "Enter the stretch of the sin wave. 0 for no"
+                " wave. Number can be a float: "
+            )
+        )
 
     except IndexError:
-        sin_stretch = float(input("Enter the stretch of the sin wave. 0 for no"
-                                  " wave: "))
+        sin_stretch = float(
+            input("Enter the stretch of the sin wave. 0 for no" " wave: ")
+        )
 
-    def __init__(self, screen, dot_color, line_color,
-                 precision=2, dots=None, dot_size=1,
-                 show_dot=True, show_line=True):
+    def __init__(
+        self,
+        screen,
+        dot_color,
+        line_color,
+        precision=2,
+        dots=None,
+        dot_size=1,
+        show_dot=True,
+        show_line=True,
+    ):
         """
         :param screen: Pygame screen
         :param dot_color: Color for each dot
@@ -294,15 +330,15 @@ class DrawDots:
         if self.sin_stretch:
             for i in range(len(self.sin_dots)):
                 self.sin_dots[i] = (
-                    self.sin_dots[i][0] + (self.sin_stretch*Circle.unit),
-                    self.sin_dots[i][1]
+                    self.sin_dots[i][0] + (self.sin_stretch * Circle.unit),
+                    self.sin_dots[i][1],
                 )
             self.sin_dots.append((0, new_dot[1]))
 
             for i in range(len(self.cos_dots)):
                 self.cos_dots[i] = (
                     self.cos_dots[i][0],
-                    self.cos_dots[i][1] + (self.sin_stretch*Circle.unit)
+                    self.cos_dots[i][1] + (self.sin_stretch * Circle.unit),
                 )
             self.cos_dots.append((new_dot[0], 0))
 
@@ -319,8 +355,10 @@ class DrawDots:
         :param dot: (x, y) coordinate
         :return (x, y) coordinate
         """
-        rounded_dot = (round(dot[0], self.precision),
-                       round(dot[1], self.precision))
+        rounded_dot = (
+            round(dot[0], self.precision),
+            round(dot[1], self.precision),
+        )
         return rounded_dot
 
     def update(self, t, complex=None):
@@ -369,7 +407,7 @@ class DrawDots:
             # Draw all dots
             for dot in range(len(self.dots) - 1):
                 if self.show_line:
-                    self.draw_line(self.dots[dot], self.dots[dot+1])
+                    self.draw_line(self.dots[dot], self.dots[dot + 1])
 
                 if self.show_dot:
                     self.draw_dot(self.dots[dot])
@@ -381,7 +419,9 @@ class DrawDots:
             else:
                 for dot in range(len(self.sin_dots) - 1):
                     if self.show_line:
-                        self.draw_line(self.sin_dots[dot], self.sin_dots[dot+1], "black")
+                        self.draw_line(
+                            self.sin_dots[dot], self.sin_dots[dot + 1], "black"
+                        )
 
                     if self.show_dot:
                         self.draw_dot(self.sin_dots[dot], "black")
@@ -393,7 +433,9 @@ class DrawDots:
             else:
                 for dot in range(len(self.cos_dots) - 1):
                     if self.show_line:
-                        self.draw_line(self.cos_dots[dot], self.cos_dots[dot+1], "black")
+                        self.draw_line(
+                            self.cos_dots[dot], self.cos_dots[dot + 1], "black"
+                        )
 
                     if self.show_dot:
                         self.draw_dot(self.cos_dots[dot], "black")
@@ -435,7 +477,7 @@ def center_coords(coords, plane=None):
     else:
         width, height = plane[0], plane[1]
 
-    return width/2 + coords[0], height/2 + coords[1]
+    return width / 2 + coords[0], height / 2 + coords[1]
 
 
 def un_center_coords(coords, plane=None):
@@ -447,7 +489,7 @@ def un_center_coords(coords, plane=None):
     else:
         width, height = plane[0], plane[1]
 
-    return coords[0] - width/2, coords[1] - height/2
+    return coords[0] - width / 2, coords[1] - height / 2
 
 
 def py_coords(coords):
@@ -473,14 +515,15 @@ def screen_size():
     return 600, 600
 
 
-def create_circles(screen, filename, draw=True,
-                   dot_color=(0, 0, 255), line_color=(0, 255, 0)):
+def create_circles(
+    screen, filename, draw=True, dot_color=(0, 0, 255), line_color=(0, 255, 0)
+):
     # Read the consts from file
-    with open(filename, 'r') as file:
-        constants_str = file.readline().replace('\n', '')
+    with open(filename, "r") as file:
+        constants_str = file.readline().replace("\n", "")
 
     # Turn into list
-    constants_ls = constants_str.split(';')
+    constants_ls = constants_str.split(";")
 
     # Remove empty strings
     constants_ls = list(filter(None, constants_ls))
@@ -502,10 +545,15 @@ def create_circles(screen, filename, draw=True,
     # Start making objects
     circles = []
     for const in range(0, len(constants)):
-        circles.append(Circle(screen, constants[const],
-                              nums[const],
-                              show_circumference=False,
-                              r_stroke=1))
+        circles.append(
+            Circle(
+                screen,
+                constants[const],
+                nums[const],
+                show_circumference=False,
+                r_stroke=1,
+            )
+        )
 
     # Reverse the list for attaching
     circles.reverse()
@@ -564,18 +612,18 @@ def main():
             t = 0
             # resize = True
 
-        screen.fill(color['white'])
+        screen.fill(color["white"])
 
         # -- Draw elements -- #
         # Graph axes
         # X
-        #pygame.draw.line(screen,
+        # pygame.draw.line(screen,
         #                 color['light_gray'],
         #                 xy(-width/2, 0),
         #                 xy(width/2, 0))
 
         # Y
-        #pygame.draw.line(screen,
+        # pygame.draw.line(screen,
         #                 color['light_gray'],
         #                 xy(0, height/2),
         #                 xy(0, -height/2))
@@ -613,11 +661,11 @@ def main():
 
 if __name__ == "__main__":
     color = {
-        'white': (255, 255, 255),
-        'black': (0, 0, 0),
-        'light_gray': (100, 100, 100),
-        'red': (255, 0, 0),
-        'green': (0, 255, 0),
-        'blue': (0, 0, 255)
+        "white": (255, 255, 255),
+        "black": (0, 0, 0),
+        "light_gray": (100, 100, 100),
+        "red": (255, 0, 0),
+        "green": (0, 255, 0),
+        "blue": (0, 0, 255),
     }
     main()

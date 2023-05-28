@@ -18,9 +18,7 @@ def integral(pts, n):
     # with each value of pts
     for pt in pts:
         t += inc
-        new_pts.append(
-            pt * pow(math.e, n * -1 * 2 * math.pi * 1j * t)
-        )
+        new_pts.append(pt * pow(math.e, n * -1 * 2 * math.pi * 1j * t))
 
     # To get the average we dont divide because its from values 0 to 1. x/1 = x
     c = sum(new_pts)
@@ -29,13 +27,13 @@ def integral(pts, n):
 
 
 def write_complex(num, filename):
-    with open(filename, 'a') as file:
+    with open(filename, "a") as file:
         if num.imag < 0:
             line = "{}{}j".format(num.real, num.imag)
         else:
             line = "{}+{}j".format(num.real, num.imag)
 
-        file.write(line + ';')
+        file.write(line + ";")
 
 
 def coords_to_complex(coords):
@@ -101,7 +99,7 @@ def normalize_coords(pts):
     max_x = min_x + distance
 
     for x in x_points:
-        new_x.append((x-min_x)/(max_x-min_x))
+        new_x.append((x - min_x) / (max_x - min_x))
 
     # Continue with y values
     new_y = []
@@ -133,19 +131,23 @@ def main():
     except IndexError:
         resolution = float(
             input("Enter a resolution, the higher the better: ").strip()
-            )
+        )
 
     raw_points = svg_parser.main(svg_filename, resolution)
 
     to_flip = True
     flip = 1
     try:
-        to_flip = True if argv[2][0].lower() in ['y', 'yes', 't', '1']\
-            else False
+        to_flip = (
+            True if argv[2][0].lower() in ["y", "yes", "t", "1"] else False
+        )
 
     except IndexError:
-        to_flip = True if input("Flip? ")[0].lower() in ['y', 'yes', 't', '1']\
+        to_flip = (
+            True
+            if input("Flip? ")[0].lower() in ["y", "yes", "t", "1"]
             else False
+        )
 
     if to_flip:
         flip = -1
@@ -157,7 +159,7 @@ def main():
     points = normalize_coords(points)
 
     # Move it to 0, 0
-    points = [(coord[0] - .5, coord[1] - .5) for coord in points]
+    points = [(coord[0] - 0.5, coord[1] - 0.5) for coord in points]
 
     # Convert the coordinates to complex numbers
     complex_points = [coords_to_complex(x) for x in points]
@@ -170,8 +172,14 @@ def main():
         numbers = abs(int(input("Enter the amount of pairs of circles: ")))
 
     except ValueError:
-        numbers = abs(int(input("Enter the amount of pairs of circles. "
-                                "Must be an integer: ")))
+        numbers = abs(
+            int(
+                input(
+                    "Enter the amount of pairs of circles. "
+                    "Must be an integer: "
+                )
+            )
+        )
 
     TIME_TO_TIMEOUT_S = 60
 
@@ -188,7 +196,7 @@ def main():
         #     print(f'timed out after {timeout_time*100:.7f}ms')
         #     break
     final_time = time.time() - start_time
-    print(f'Circles created in {final_time*100:.7f}ms')
+    print(f"Circles created in {final_time*100:.7f}ms")
 
     # By the end, the values would look like
     # 0
@@ -199,9 +207,9 @@ def main():
     # etc.s
 
     # Clear file
-    writing_filename = 'constants'
-    with open(writing_filename, 'w') as file:
-        file.write('')
+    writing_filename = "constants"
+    with open(writing_filename, "w") as file:
+        file.write("")
 
     for i in range(len(constants)):
         print(i, constants[i])

@@ -10,17 +10,17 @@ def get_d(filename):
     Gets the contents of the attribute d of the first path
     it finds in the given svg file
     """
-    source = open(filename, 'r')
+    source = open(filename, "r")
 
-    soup = bs.BeautifulSoup(source, 'xml')
+    soup = bs.BeautifulSoup(source, "xml")
 
     # This doesnt have support for multiple d or paths
 
-    paths = soup.findAll('path')
+    paths = soup.findAll("path")
 
     ctrl_points = []
     for path in paths:
-        ctrl_points.append(path.get('d'))
+        ctrl_points.append(path.get("d"))
 
     return ctrl_points
 
@@ -47,7 +47,7 @@ def list_d(ls):
             spaced_items.append(" ")
 
     # Join and then split again to remove duplicate spaces
-    items = ''.join(spaced_items).split()
+    items = "".join(spaced_items).split()
 
     for item in items:
         # Leave string items as they are
@@ -122,7 +122,7 @@ def sep_commands(ls):
     # unless the last item is a char
     # In case it does, the if should stop repeats hopefully
     if ls[last:i] != new_ls[-1]:
-        new_ls.append(ls[last:i + 1])
+        new_ls.append(ls[last : i + 1])
 
     return new_ls
 
@@ -188,12 +188,12 @@ def relative_to_absolute(ls):
 
             else:
                 # Replace the 0 value AND make specified absolute
-                coord = (add_xy(ls[i][1][0], current))
+                coord = add_xy(ls[i][1][0], current)
             # Verticals (0, y)
 
             new_coords.append(coord)
 
-            new_ls.append(['l', new_coords])
+            new_ls.append(["l", new_coords])
 
             # Set current to latest coordinate
             current = new_ls[-1][1][-1]
@@ -204,7 +204,6 @@ def relative_to_absolute(ls):
 
             # lower case are relatives. Upper are absolute
             if ls[i][0].islower():
-
                 # Add the current value to each coordinate
                 for coord in ls[i][1]:
                     new_coords.append(add_xy(current, coord))
@@ -238,14 +237,11 @@ def separate_points(sep_ls):
     # coms is short for commands
     coms = {
         "m": 1,  # Move
-
         "l": 1,  # Line to
         "h": 1,  # Horizontal
         "v": 1,  # Vertical
-
         "c": 3,  # Cubic bezier
         "s": 2,  # Smooth cubic bezier
-
         "q": 2,  # Quadratic bezier
         "t": 1,  # Smooth quadratic bezier
     }
@@ -262,7 +258,7 @@ def separate_points(sep_ls):
         start = 1
         # Get sections of length coms[com]
         for i in range(0, (len(item) - 1) // coms[com]):
-            to_append = item[start: start + coms[com]]
+            to_append = item[start : start + coms[com]]
 
             new_ls.append([item[0], to_append])
 
@@ -293,14 +289,12 @@ def implicit_lineto(ls):
     #    the move commands
     # If [0][0] is m and the len of [0] > 2,
     # [m, (1,2), (4,5), (7,8)] -> [m, (1, 2)], [l, (4,5), (7,8)]
-    if item[0].lower() == 'm' and len(item) > 2:
+    if item[0].lower() == "m" and len(item) > 2:
         # Store the extra coordinates in a temporary var
         temp_item = item[2:]
 
         # Put appropiate line to command at the start
-        temp_item.insert(
-            0, 'L' if item[0].isupper() else 'l'
-        )
+        temp_item.insert(0, "L" if item[0].isupper() else "l")
 
         new_items.append(temp_item)
 
@@ -343,10 +337,12 @@ def cubic_bezier(arg_points, t):
         # https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves
 
         # TODO: Change these to pow()
-        num = (((1 - t) ** 3) * p0[i]) \
-              + (3 * t * ((1 - t) ** 2) * p1[i]) \
-              + (3 * (t ** 2) * (1 - t) * p2[i]) \
-              + ((t ** 3) * p3[i])
+        num = (
+            (((1 - t) ** 3) * p0[i])
+            + (3 * t * ((1 - t) ** 2) * p1[i])
+            + (3 * (t**2) * (1 - t) * p2[i])
+            + ((t**3) * p3[i])
+        )
 
         coords.append(num)
 
@@ -363,13 +359,16 @@ def quadratic_bezier(arg_points, t):
     # For x and then y
     for i in [0, 1]:
         # https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Quadratic_B%C3%A9zier_curves
-        num = (pow(1 - t, 2) * p0[i])\
-              + (2 * (1 - t) * t * p1[i])\
-              + (pow(t, 2) * p2[i])
+        num = (
+            (pow(1 - t, 2) * p0[i])
+            + (2 * (1 - t) * t * p1[i])
+            + (pow(t, 2) * p2[i])
+        )
 
         coords.append(num)
 
     return tuple(coords)
+
 
 # --
 
@@ -378,9 +377,11 @@ def not_supported(*args):
     """
     Sorry!!
     """
-    raise Exception('Sorry!! There is not support for this '
-                    f'svg command yet!! ({args[0]}) Please create an '
-                    'issue on github.')
+    raise Exception(
+        "Sorry!! There is not support for this "
+        f"svg command yet!! ({args[0]}) Please create an "
+        "issue on github."
+    )
 
 
 def main(filename, resolution):
@@ -427,11 +428,9 @@ def main(filename, resolution):
         "l": line,
         "h": not_supported,
         "v": not_supported,
-
         # Cubic bezier
         "c": cubic_bezier,
         "s": not_supported,
-
         # Quadratic bezier
         "q": quadratic_bezier,
         "t": not_supported,
